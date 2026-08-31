@@ -50,7 +50,7 @@ URL stables — ils sont réutilisables tels quels.
 
 Les limites connues — la CSG non isolée, les transferts entre administrations invisibles après
 consolidation, l'absence de granularité par ministère — sont détaillées sur la page
-[Méthode](https://mouvementdargent.fr/methodologie) du site.
+[Méthode](src/app/methodologie/page.tsx) du site.
 
 ## Développement
 
