@@ -9,6 +9,11 @@ export default async function Page() {
   const index = await lireIndex();
   const d = await lireAnnee(index.anneeParDefaut);
   const cumul = d.administrations.reduce((a, x) => a + x.depenses, 0);
+  const admin = d.administration;
+  const transferts =
+    admin?.interne.natures
+      .filter((n) => !n.fonctionnement)
+      .reduce((a, n) => a + n.montant, 0) ?? 0;
 
   return (
     <main className="mx-auto max-w-[730px] px-6 py-14">
@@ -148,6 +153,86 @@ export default async function Page() {
         </p>
       </Section>
 
+      <Section titre="Comment « l'administration d'elle-même » est calculée">
+        <p>
+          C&apos;est le seul chiffre du site qui résulte d&apos;un choix de périmètre plutôt que
+          d&apos;une ligne publiée telle quelle. Il mérite donc d&apos;être détaillé pas à pas.
+        </p>
+        <p>
+          On part de la division 01 de la CFAP, « services généraux des administrations publiques »,
+          soit <strong>{milliards(admin?.division.montant ?? 0)}</strong> en {d.meta.annee}. Cette
+          division est trompeuse : elle contient aussi la charge de la dette, la recherche
+          fondamentale et l&apos;aide économique extérieure, qui ne décrivent en rien le
+          fonctionnement de l&apos;administration. Ces quatre groupes sont écartés — et affichés
+          sur la page, barre grise à l&apos;appui, plutôt que retirés en silence.
+        </p>
+        <p>
+          Restent quatre groupes, <strong>{milliards(admin?.interne.montant ?? 0)}</strong> : les
+          organes exécutifs et législatifs avec les affaires financières, fiscales et étrangères
+          (01.1), les services généraux — personnel, planification, statistique, achats, immobilier
+          (01.3), leur recherche (01.5), et un résidu (01.6).
+        </p>
+        <p>
+          Ce montant est ensuite croisé avec la <em>nature économique</em> de la dépense, ce qui est
+          la partie décisive. Sur ces {milliards(admin?.interne.montant ?? 0)},{" "}
+          <strong>{milliards(transferts)}</strong> sont des transferts : de l&apos;argent inscrit
+          sur la ligne budgétaire d&apos;un service administratif mais versé ailleurs, dont la
+          contribution française au budget de l&apos;Union européenne. Les compter comme du coût
+          d&apos;administration est l&apos;erreur la plus fréquente sur ce chiffre, et elle le
+          gonfle de près de moitié.
+        </p>
+        <p>
+          Le coût de fonctionnement propre est donc la somme de trois natures seulement —
+          rémunérations, consommations intermédiaires, investissement — soit{" "}
+          <strong>{milliards(admin?.interne.fonctionnement ?? 0)}</strong>, ou{" "}
+          {pourcent((admin?.interne.fonctionnement ?? 0) / d.agregats.depenses)} de la dépense
+          publique. Les six natures retenues recouvrent le total à l&apos;euro près ; si ce
+          n&apos;était plus le cas, l&apos;écart apparaîtrait dans une ligne « Autres natures ».
+        </p>
+        <p>
+          <strong>La limite, qu&apos;on ne peut pas lever.</strong> Eurostat s&apos;arrête au
+          deuxième niveau de la CFAP. Le groupe 01.1 réunit donc dans un seul montant la direction
+          politique du pays, l&apos;administration fiscale et la diplomatie. Aucune clé de
+          répartition entre les trois n&apos;est publiée pour la France, et on n&apos;en invente
+          pas : la diplomatie reste comptée dans ce chiffre. Il faut le lire comme une borne
+          haute.
+        </p>
+      </Section>
+
+      <Section titre="Les pouvoirs publics : une seconde source, saisie à la main">
+        <p>
+          La section sur les élus est la seule du site à ne pas venir des comptes nationaux, et
+          c&apos;est une conséquence directe de la limite ci-dessus : la comptabilité nationale ne
+          sépare nulle part les élus des agents qu&apos;ils dirigent. Aucun traitement ne permet de
+          les en extraire.
+        </p>
+        <p>
+          Les montants viennent donc de deux familles de documents officiels français : les
+          rapports du Sénat sur la mission « Pouvoirs publics » du projet de loi de finances, et
+          les fiches publiées par l&apos;Assemblée nationale et par le Sénat sur l&apos;indemnité
+          parlementaire. Chaque chiffre est recopié tel quel, accompagné sur la page de son lien et
+          de sa date de relevé. Rien n&apos;est calculé, actualisé ni reconstitué.
+        </p>
+        <p>
+          La contrepartie est explicite : ces valeurs ne se mettent pas à jour toutes seules
+          quand une nouvelle loi de finances paraît, contrairement au reste du site. Elles vivent
+          dans <code>src/lib/pouvoirs.ts</code> et se corrigent à la main.
+        </p>
+        <p>
+          Deux précautions de lecture y sont appliquées. Les dotations sont des crédits{" "}
+          <em>votés</em>, pas exécutés. Et la dotation de fonctionnement parlementaire comme le
+          crédit collaborateurs sont affichés séparément de l&apos;indemnité : ce sont des frais de
+          mandat et des salaires versés à d&apos;autres personnes, les additionner au revenu de
+          l&apos;élu double le chiffre sans rien décrire.
+        </p>
+        <p>
+          Le traitement du Président de la République et des ministres n&apos;est volontairement pas
+          chiffré : le décret qui le fixe ne donne pas un montant mais une formule indexée sur la
+          grille hors échelle de la fonction publique. Il n&apos;existe donc aucun montant officiel
+          à citer.
+        </p>
+      </Section>
+
       <Section titre="Ce que les données ne permettent pas de montrer">
         <ul className="space-y-3">
           <li>
@@ -169,6 +254,17 @@ export default async function Page() {
             <strong>Le détail arrive avec un an de retard.</strong> Les grands agrégats d&apos;une
             année sont publiés au printemps suivant, la ventilation par fonction un an après. Les
             années sans détail portent une astérisque dans le sélecteur.
+          </li>
+          <li>
+            <strong>Les élus ne sont pas séparables des agents.</strong> La CFAP s&apos;arrête au
+            groupe 01.1, qui réunit la direction politique, l&apos;administration fiscale et la
+            diplomatie. C&apos;est pourquoi la section sur les pouvoirs publics change de source.
+          </li>
+          <li>
+            <strong>Les effectifs n&apos;apparaissent nulle part.</strong> Les comptes nationaux
+            publient des masses salariales, pas des nombres d&apos;agents. On ne peut donc pas
+            dire combien de personnes travaillent dans l&apos;administration générale, seulement
+            ce qu&apos;elles coûtent.
           </li>
           <li>
             <strong>Aucune granularité par ministère, programme ou commune.</strong> C&apos;est la

@@ -9,6 +9,8 @@ const SOMMAIRE = [
   { href: "#detail", texte: "Poste par poste" },
   { href: "#administrations", texte: "Qui dépense" },
   { href: "#trajectoire", texte: "La trajectoire" },
+  { href: "#administration", texte: "L'administration" },
+  { href: "#pouvoirs", texte: "Les élus" },
   { href: "#retenir", texte: "À retenir" },
 ];
 

@@ -11,7 +11,7 @@ await p.goto(base + '/', { waitUntil: 'networkidle' });
 await p.waitForTimeout(800);
 await p.screenshot({ path: `${out}/1-haut.png` });
 await p.locator('#flux svg[role=img]').screenshot({ path: `${out}/2-sankey.png` });
-for (const [nom, sel] of [['3-detail','#detail'],['4-administrations','#administrations'],['5-trajectoire','#trajectoire'],['6-retenir','#retenir']]) {
+for (const [nom, sel] of [['3-detail','#detail'],['4-administrations','#administrations'],['5-trajectoire','#trajectoire'],['6-administration','#administration'],['7-pouvoirs','#pouvoirs'],['8-retenir','#retenir']]) {
   await p.locator(sel).scrollIntoViewIfNeeded();
   await p.waitForTimeout(250);
   await p.locator(sel).screenshot({ path: `${out}/${nom}.png` });
@@ -22,7 +22,7 @@ await p.screenshot({ path: `${out}/0-page.png`, fullPage: true });
 await p.getByRole('button', { name: 'Par habitant' }).click();
 await p.waitForTimeout(300);
 await p.locator('#detail').scrollIntoViewIfNeeded();
-await p.locator('#detail').screenshot({ path: `${out}/7-par-habitant.png` });
+await p.locator('#detail').screenshot({ path: `${out}/9-par-habitant.png` });
 
 // Vérification arithmétique dans le navigateur
 const check = await p.evaluate(async () => {
@@ -38,7 +38,7 @@ console.log('CHECK', JSON.stringify(check));
 
 // Méthode
 await p.goto(base + '/methodologie', { waitUntil: 'networkidle' });
-await p.screenshot({ path: `${out}/8-methode.png`, fullPage: true });
+await p.screenshot({ path: `${out}/10-methode.png`, fullPage: true });
 
 // Mobile
 const m = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
@@ -52,6 +52,11 @@ await m.screenshot({ path: `${out}/m2-detail.png` });
 await m.locator('#administrations').scrollIntoViewIfNeeded();
 await m.waitForTimeout(250);
 await m.screenshot({ path: `${out}/m3-admin.png` });
+for (const [nom, sel] of [['m4-administration','#administration'],['m5-pouvoirs','#pouvoirs']]) {
+  await m.locator(sel).scrollIntoViewIfNeeded();
+  await m.waitForTimeout(250);
+  await m.screenshot({ path: `${out}/${nom}.png` });
+}
 const scrollX = await m.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
 console.log('PAGE SCROLLS HORIZONTALLY:', scrollX);
 

@@ -8,6 +8,8 @@ import Sankey from "./Sankey";
 import Palmares from "./Palmares";
 import QuiDepense from "./QuiDepense";
 import Historique from "./Historique";
+import Administration from "./Administration";
+import PouvoirsPublics from "./PouvoirsPublics";
 import { classer, classerRessources, construireGraphe } from "@/lib/modele";
 import {
   LIBELLES_UNITES,
@@ -238,8 +240,48 @@ export default function Explorateur({
             <Historique index={index} annee={meta.annee} onAnnee={changerAnnee} />
           </Section>
 
+          {donnees.administration ? (
+            <Section
+              numero="05"
+              id="administration"
+              titre="Ce que l'administration se coûte à elle-même"
+              chapo={
+                <>
+                  Combien coûte l&apos;appareil administratif pour lui-même, une fois retirés les
+                  enseignants, les soignants, les policiers et les militaires ? La question n&apos;a
+                  pas de réponse d&apos;un seul chiffre, mais elle en a une : il faut croiser la
+                  fonction de la dépense et sa nature économique, et dire ce que la source ne
+                  permet pas de séparer.
+                </>
+              }
+            >
+              <Administration
+                administration={donnees.administration}
+                donnees={donnees}
+                index={index}
+                bareme={bareme}
+                unite={unite}
+              />
+            </Section>
+          ) : null}
+
           <Section
-            numero="05"
+            numero={donnees.administration ? "06" : "05"}
+            id="pouvoirs"
+            titre="Les élus, à l'échelle"
+            chapo={
+              <>
+                La dernière lecture change de source et d&apos;ordre de grandeur. Les comptes
+                nationaux ne distinguent jamais les élus des agents : ces montants viennent des
+                documents budgétaires français, saisis à la main et datés un par un.
+              </>
+            }
+          >
+            <PouvoirsPublics donnees={donnees} index={index} />
+          </Section>
+
+          <Section
+            numero={donnees.administration ? "07" : "06"}
             id="retenir"
             titre="Trois choses à retenir"
             chapo={

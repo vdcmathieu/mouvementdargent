@@ -1,5 +1,5 @@
 {
- "genereLe": "2026-08-31T14:26:57.756Z",
+ "genereLe": "2026-08-31T16:30:15.265Z",
  "misAJourParEurostat": "2026-07-21T11:00:00+0200",
  "annees": [
   2015,
@@ -34,7 +34,8 @@
    "depenses": 1268007.8,
    "solde": -85681,
    "pib": 2201401.6,
-   "complet": true
+   "complet": true,
+   "administration": 52627.6
   },
   {
    "annee": 2016,
@@ -42,7 +43,8 @@
    "depenses": 1280648.1,
    "solde": -84025.20000000019,
    "pib": 2231819.2,
-   "complet": true
+   "complet": true,
+   "administration": 53110.9
   },
   {
    "annee": 2017,
@@ -50,7 +52,8 @@
    "depenses": 1321444.6,
    "solde": -77057.70000000019,
    "pib": 2291680.5,
-   "complet": true
+   "complet": true,
+   "administration": 53624.8
   },
   {
    "annee": 2018,
@@ -58,7 +61,8 @@
    "depenses": 1327632.3,
    "solde": -54616.19999999995,
    "pib": 2355362.8,
-   "complet": true
+   "complet": true,
+   "administration": 53726.5
   },
   {
    "annee": 2019,
@@ -66,7 +70,8 @@
    "depenses": 1346154.7,
    "solde": -58225.5,
    "pib": 2432206.8,
-   "complet": true
+   "complet": true,
+   "administration": 55276.7
   },
   {
    "annee": 2020,
@@ -74,7 +79,8 @@
    "depenses": 1430357,
    "solde": -207084.3999999999,
    "pib": 2318276.2,
-   "complet": true
+   "complet": true,
+   "administration": 55589.2
   },
   {
    "annee": 2021,
@@ -82,7 +88,8 @@
    "depenses": 1491381.1,
    "solde": -165149.30000000005,
    "pib": 2508102.3,
-   "complet": true
+   "complet": true,
+   "administration": 58452.4
   },
   {
    "annee": 2022,
@@ -90,7 +97,8 @@
    "depenses": 1550331.4,
    "solde": -125895.79999999981,
    "pib": 2653997.2,
-   "complet": true
+   "complet": true,
+   "administration": 62240.5
   },
   {
    "annee": 2023,
@@ -98,7 +106,8 @@
    "depenses": 1608270.8,
    "solde": -151920.30000000005,
    "pib": 2833826.4,
-   "complet": true
+   "complet": true,
+   "administration": 65084.4
   },
   {
    "annee": 2024,
@@ -106,7 +115,8 @@
    "depenses": 1672708.2,
    "solde": -169118.09999999986,
    "pib": 2935236.2,
-   "complet": true
+   "complet": true,
+   "administration": 67554
   },
   {
    "annee": 2025,
@@ -114,7 +124,8 @@
    "depenses": 1714137.2,
    "solde": -152511.09999999986,
    "pib": 2991055.9,
-   "complet": false
+   "complet": false,
+   "administration": null
   }
  ]
 }

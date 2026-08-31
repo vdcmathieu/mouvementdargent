@@ -9,6 +9,37 @@ export type Poste = {
 
 export type Secteur = { nom: string; court: string; description: string };
 
+/** Un groupe de la division 01 de la CFAP, avec la part qui le fait tourner. */
+export type PosteAdministration = {
+  code: string;
+  libelle: string;
+  montant: number;
+  /** Rémunérations + achats + investissement : le coût de fonctionnement propre. */
+  fonctionnement: number;
+  parSecteur?: Record<string, number>;
+};
+
+/**
+ * Ce que l'appareil administratif dépense pour lui-même, isolé du reste de la
+ * division 01 (dette, recherche fondamentale, aide extérieure). Nul quand la
+ * ventilation par fonction de l'année n'est pas encore publiée.
+ */
+export type Administration = {
+  division: { code: string; libelle: string; montant: number };
+  interne: {
+    montant: number;
+    fonctionnement: number;
+    postes: PosteAdministration[];
+    natures: { code: string; libelle: string; fonctionnement: boolean; montant: number }[];
+    parSecteur: Record<string, number>;
+  };
+  horsInterne: { code: string; libelle: string; montant: number }[];
+  remunerations: {
+    total: number;
+    parFonction: { code: string; libelle: string; montant: number }[];
+  };
+};
+
 export type Annee = {
   meta: {
     annee: number;
@@ -32,6 +63,7 @@ export type Annee = {
   fonctions: Poste[];
   natures: Poste[];
   administrations: (Secteur & { code: string; depenses: number; recettes: number; agents: number })[];
+  administration: Administration | null;
 };
 
 export type Index = {
@@ -47,6 +79,7 @@ export type Index = {
     solde: number;
     pib: number;
     complet: boolean;
+    administration: number | null;
   }[];
 };
 

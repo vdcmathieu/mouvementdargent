@@ -3,7 +3,7 @@
   "annee": 2024,
   "complet": true,
   "unite": "millions d'euros courants",
-  "genereLe": "2026-08-31T14:26:57.755Z",
+  "genereLe": "2026-08-31T16:30:15.264Z",
   "misAJourParEurostat": "2026-07-21T11:00:00+0200",
   "sources": [
    {
@@ -822,5 +822,179 @@
    "recettes": 778428.1,
    "agents": 85278.7
   }
- ]
+ ],
+ "administration": {
+  "division": {
+   "code": "GF01",
+   "libelle": "Services généraux des administrations publiques",
+   "montant": 181103.2
+  },
+  "interne": {
+   "montant": 97471.5,
+   "fonctionnement": 67554,
+   "postes": [
+    {
+     "code": "GF0103",
+     "libelle": "Services généraux",
+     "montant": 53780.4,
+     "fonctionnement": 50183.8,
+     "parSecteur": {
+      "S1311": 2465.1,
+      "S1313": 53303.1
+     }
+    },
+    {
+     "code": "GF0101",
+     "libelle": "Fonctionnement des organes exécutifs et législatifs, affaires financières et fiscales, affaires étrangères",
+     "montant": 42818.4,
+     "fonctionnement": 16656.5,
+     "parSecteur": {
+      "S1311": 40000.4,
+      "S1313": 2919.8,
+      "S1314": 1655
+     }
+    },
+    {
+     "code": "GF0106",
+     "libelle": "Services généraux des administrations publiques n.c.a.",
+     "montant": 866.6,
+     "fonctionnement": 707.6,
+     "parSecteur": {
+      "S1311": 399,
+      "S1313": 482.5
+     }
+    },
+    {
+     "code": "GF0105",
+     "libelle": "R & D concernant des services généraux des administrations publiques",
+     "montant": 6.1,
+     "fonctionnement": 6.1,
+     "parSecteur": {
+      "S1311": 5.1,
+      "S1314": 1
+     }
+    }
+   ],
+   "natures": [
+    {
+     "code": "D1",
+     "libelle": "Rémunération des agents",
+     "fonctionnement": true,
+     "montant": 40592.8
+    },
+    {
+     "code": "P2",
+     "libelle": "Achats et fonctionnement courant",
+     "fonctionnement": true,
+     "montant": 14814.9
+    },
+    {
+     "code": "OP5ANP",
+     "libelle": "Investissement",
+     "fonctionnement": true,
+     "montant": 12146.3
+    },
+    {
+     "code": "D7",
+     "libelle": "Autres transferts courants",
+     "fonctionnement": false,
+     "montant": 26104.5
+    },
+    {
+     "code": "D9",
+     "libelle": "Transferts en capital",
+     "fonctionnement": false,
+     "montant": 2617.7
+    },
+    {
+     "code": "D29_D5_D8",
+     "libelle": "Impôts payés et ajustements",
+     "fonctionnement": false,
+     "montant": 1195.4
+    }
+   ],
+   "parSecteur": {
+    "S1311": 42869.6,
+    "S1313": 56705.4,
+    "S1314": 1656
+   }
+  },
+  "horsInterne": [
+   {
+    "code": "GF0107",
+    "libelle": "Opérations concernant la dette publique",
+    "montant": 58870.2
+   },
+   {
+    "code": "GF0104",
+    "libelle": "Recherche fondamentale",
+    "montant": 19880.5
+   },
+   {
+    "code": "GF0102",
+    "libelle": "Aide économique extérieure",
+    "montant": 4880.9
+   },
+   {
+    "code": "GF0108",
+    "libelle": "Transferts de caractère général entre administrations publiques",
+    "montant": 0.1
+   }
+  ],
+  "remunerations": {
+   "total": 362149.3,
+   "parFonction": [
+    {
+     "code": "GF09",
+     "libelle": "Enseignement",
+     "montant": 103784.5
+    },
+    {
+     "code": "GF07",
+     "libelle": "Santé",
+     "montant": 70075
+    },
+    {
+     "code": "GF01",
+     "libelle": "Services généraux des administrations publiques",
+     "montant": 47614.6
+    },
+    {
+     "code": "GF03",
+     "libelle": "Ordre et sécurité publics",
+     "montant": 36410.7
+    },
+    {
+     "code": "GF10",
+     "libelle": "Protection sociale",
+     "montant": 32391.1
+    },
+    {
+     "code": "GF02",
+     "libelle": "Défense",
+     "montant": 21526.2
+    },
+    {
+     "code": "GF04",
+     "libelle": "Affaires économiques",
+     "montant": 20340.7
+    },
+    {
+     "code": "GF08",
+     "libelle": "Loisirs, culture et culte",
+     "montant": 14796.3
+    },
+    {
+     "code": "GF06",
+     "libelle": "Logements et équipements collectifs",
+     "montant": 8802.5
+    },
+    {
+     "code": "GF05",
+     "libelle": "Protection de l'environnement",
+     "montant": 6407.8
+    }
+   ]
+  }
+ }
 }

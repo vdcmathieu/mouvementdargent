@@ -13,7 +13,11 @@ const nf = (d: number) =>
 /** 206332 → « 206,3 Md€ ». En dessous du milliard, on bascule en millions. */
 export function milliards(mEuros: number, precision?: number): string {
   const md = mEuros / 1000;
-  if (Math.abs(md) < 1) return lisible(`${nf(0).format(Math.round(mEuros))} M€`);
+  // Sous le milliard on passe en millions ; sous les dix millions, une
+  // décimale, sinon un poste de 100 000 € s'afficherait « 0 M€ ».
+  if (Math.abs(md) < 1) {
+    return lisible(`${nf(Math.abs(mEuros) < 10 ? 1 : 0).format(mEuros)} M€`);
+  }
   // Une décimale partout au-dessus du milliard : deux décimales sur les petits
   // postes désalignaient les colonnes de chiffres pour un gain de précision nul.
   return lisible(`${nf(precision ?? 1).format(md)} Md€`);
@@ -33,8 +37,9 @@ export function euros(v: number): string {
   return lisible(`${nf(0).format(Math.round(v))} €`);
 }
 
+/** Deux décimales seulement s'il y a des centimes : « 11 463 € », pas « 11 463,00 € ». */
 export function eurosPrecis(v: number, decimales = 2): string {
-  return lisible(`${nf(decimales).format(v)} €`);
+  return lisible(`${nf(Number.isInteger(v) ? 0 : decimales).format(v)} €`);
 }
 
 export function entier(v: number): string {

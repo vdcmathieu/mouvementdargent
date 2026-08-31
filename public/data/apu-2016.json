@@ -3,7 +3,7 @@
   "annee": 2016,
   "complet": true,
   "unite": "millions d'euros courants",
-  "genereLe": "2026-08-31T14:26:57.748Z",
+  "genereLe": "2026-08-31T16:30:15.251Z",
   "misAJourParEurostat": "2026-07-21T11:00:00+0200",
   "sources": [
    {
@@ -817,5 +817,173 @@
    "recettes": 581602.1,
    "agents": 65603
   }
- ]
+ ],
+ "administration": {
+  "division": {
+   "code": "GF01",
+   "libelle": "Services généraux des administrations publiques",
+   "montant": 144287.7
+  },
+  "interne": {
+   "montant": 78527.1,
+   "fonctionnement": 53110.9,
+   "postes": [
+    {
+     "code": "GF0103",
+     "libelle": "Services généraux",
+     "montant": 40504,
+     "fonctionnement": 37753.7,
+     "parSecteur": {
+      "S1311": 1251.9,
+      "S1313": 40855.8
+     }
+    },
+    {
+     "code": "GF0101",
+     "libelle": "Fonctionnement des organes exécutifs et législatifs, affaires financières et fiscales, affaires étrangères",
+     "montant": 37391.8,
+     "fonctionnement": 14829.8,
+     "parSecteur": {
+      "S1311": 35915.1,
+      "S1313": 492,
+      "S1314": 1436.4
+     }
+    },
+    {
+     "code": "GF0106",
+     "libelle": "Services généraux des administrations publiques n.c.a.",
+     "montant": 630.4,
+     "fonctionnement": 526.5,
+     "parSecteur": {
+      "S1311": 241.7,
+      "S1313": 388.7
+     }
+    },
+    {
+     "code": "GF0105",
+     "libelle": "R & D concernant des services généraux des administrations publiques",
+     "montant": 0.9,
+     "fonctionnement": 0.9,
+     "parSecteur": {
+      "S1314": 0.9
+     }
+    }
+   ],
+   "natures": [
+    {
+     "code": "D1",
+     "libelle": "Rémunération des agents",
+     "fonctionnement": true,
+     "montant": 34838.1
+    },
+    {
+     "code": "P2",
+     "libelle": "Achats et fonctionnement courant",
+     "fonctionnement": true,
+     "montant": 11333
+    },
+    {
+     "code": "OP5ANP",
+     "libelle": "Investissement",
+     "fonctionnement": true,
+     "montant": 6939.8
+    },
+    {
+     "code": "D7",
+     "libelle": "Autres transferts courants",
+     "fonctionnement": false,
+     "montant": 23630.9
+    },
+    {
+     "code": "D9",
+     "libelle": "Transferts en capital",
+     "fonctionnement": false,
+     "montant": 964.9
+    },
+    {
+     "code": "D29_D5_D8",
+     "libelle": "Impôts payés et ajustements",
+     "fonctionnement": false,
+     "montant": 811.2
+    }
+   ],
+   "parSecteur": {
+    "S1311": 37408.7,
+    "S1313": 41736.5,
+    "S1314": 1437.3
+   }
+  },
+  "horsInterne": [
+   {
+    "code": "GF0107",
+    "libelle": "Opérations concernant la dette publique",
+    "montant": 46741.8
+   },
+   {
+    "code": "GF0104",
+    "libelle": "Recherche fondamentale",
+    "montant": 15838.1
+   },
+   {
+    "code": "GF0102",
+    "libelle": "Aide économique extérieure",
+    "montant": 3180.8
+   }
+  ],
+  "remunerations": {
+   "total": 287660.1,
+   "parFonction": [
+    {
+     "code": "GF09",
+     "libelle": "Enseignement",
+     "montant": 80416.8
+    },
+    {
+     "code": "GF07",
+     "libelle": "Santé",
+     "montant": 51630.3
+    },
+    {
+     "code": "GF01",
+     "libelle": "Services généraux des administrations publiques",
+     "montant": 40505
+    },
+    {
+     "code": "GF10",
+     "libelle": "Protection sociale",
+     "montant": 27442.3
+    },
+    {
+     "code": "GF03",
+     "libelle": "Ordre et sécurité publics",
+     "montant": 27095.5
+    },
+    {
+     "code": "GF04",
+     "libelle": "Affaires économiques",
+     "montant": 18844.6
+    },
+    {
+     "code": "GF02",
+     "libelle": "Défense",
+     "montant": 18007.7
+    },
+    {
+     "code": "GF08",
+     "libelle": "Loisirs, culture et culte",
+     "montant": 11887.9
+    },
+    {
+     "code": "GF06",
+     "libelle": "Logements et équipements collectifs",
+     "montant": 6957.9
+    },
+    {
+     "code": "GF05",
+     "libelle": "Protection de l'environnement",
+     "montant": 4872.1
+    }
+   ]
+  }
+ }
 }

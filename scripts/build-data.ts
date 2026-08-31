@@ -179,9 +179,52 @@ const GROUPES_NATURE: { code: string; libelle: string; note: string; items: stri
   },
 ];
 
+/* ------------------------------------------- l'administration d'elle-même */
+
+/**
+ * Ce que l'appareil administratif dépense pour son propre fonctionnement.
+ *
+ * La division 01 de la CFAP (« services généraux des administrations
+ * publiques ») mélange deux choses très différentes : l'administration qui
+ * s'administre, et des postes qui n'ont rien à voir avec elle — la charge de
+ * la dette, la recherche fondamentale, l'aide au développement. On garde les
+ * quatre groupes qui décrivent le fonctionnement interne, et on publie les
+ * autres à côté plutôt que de les fondre dedans ou de les faire disparaître.
+ *
+ * Limite connue et non contournable : Eurostat s'arrête au deuxième niveau de
+ * la CFAP. Le groupe 01.1 réunit donc la direction politique, l'administration
+ * fiscale et la diplomatie sans qu'on puisse les séparer. Il n'existe pas de
+ * clé de répartition publiée, et on n'en invente pas.
+ */
+const ADMIN_INTERNE = ["GF0101", "GF0103", "GF0105", "GF0106"] as const;
+
+/** Les groupes de la division 01 qui ne relèvent pas du fonctionnement interne. */
+const ADMIN_HORS = ["GF0107", "GF0104", "GF0102", "GF0108"] as const;
+
+/**
+ * Les natures économiques croisées avec la fonction. Les trois premières sont
+ * le coût de fonctionnement proprement dit : des gens, des achats, des murs.
+ * Les suivantes sont de l'argent qui transite par la ligne budgétaire d'un
+ * service administratif sans le faire tourner — au premier rang desquelles la
+ * contribution française au budget de l'Union européenne.
+ */
+const NATURES_ADMIN = [
+  { code: "D1", libelle: "Rémunération des agents", fonctionnement: true },
+  { code: "P2", libelle: "Achats et fonctionnement courant", fonctionnement: true },
+  { code: "OP5ANP", libelle: "Investissement", fonctionnement: true },
+  { code: "D7", libelle: "Autres transferts courants", fonctionnement: false },
+  { code: "D9", libelle: "Transferts en capital", fonctionnement: false },
+  { code: "D29_D5_D8", libelle: "Impôts payés et ajustements", fonctionnement: false },
+] as const;
+
+const NA_ITEMS_EXP = ["TE", ...NATURES_ADMIN.map((n) => n.code)];
+
 /* ------------------------------------------------------------------ utils */
 
 const somme = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
+
+/** Somme de montants publiés au dixième de million : on coupe le bruit flottant. */
+const sommeNette = (xs: number[]) => Math.round(somme(xs) * 10) / 10;
 
 function indexer(obs: Obs[], dim: string): Map<string, number> {
   const m = new Map<string, number>();
@@ -209,7 +252,12 @@ async function main() {
   const [main, taxag, exp, pib, pop] = await Promise.all([
     fetchDataset("gov_10a_main", { geo: "FR", unit: "MIO_EUR", sector: [...SECTEURS] }),
     fetchDataset("gov_10a_taxag", { geo: "FR", unit: "MIO_EUR", sector: [...SECTEURS] }),
-    fetchDataset("gov_10a_exp", { geo: "FR", unit: "MIO_EUR", na_item: "TE", sector: [...SECTEURS] }),
+    fetchDataset("gov_10a_exp", {
+      geo: "FR",
+      unit: "MIO_EUR",
+      na_item: NA_ITEMS_EXP,
+      sector: [...SECTEURS],
+    }),
     fetchDataset("nama_10_gdp", { geo: "FR", unit: "CP_MEUR", na_item: "B1GQ" }),
     fetchDataset("demo_gind", { geo: "FR", indic_de: "AVG" }),
   ]);
@@ -240,6 +288,9 @@ async function main() {
     solde: number;
     pib: number;
     complet: boolean;
+    /** Coût de fonctionnement propre de l'administration ; nul si le détail
+     *  par fonction de l'année n'est pas encore publié. */
+    administration: number | null;
   }[] = [];
 
   for (const annee of cible) {
@@ -247,6 +298,9 @@ async function main() {
     const mainA = oMain.filter((o) => o.time === t);
     const taxA = oTaxag.filter((o) => o.time === t);
     const expA = oExp.filter((o) => o.time === t);
+    // `gov_10a_exp` est désormais chargé pour plusieurs natures économiques :
+    // tout ce qui raisonne en dépense totale doit filtrer explicitement sur TE.
+    const expTE = expA.filter((o) => o.na_item === "TE");
 
     const val = (sector: string, na: string) =>
       mainA.find((o) => o.sector === sector && o.na_item === na)?.value ?? 0;
@@ -265,9 +319,19 @@ async function main() {
     // Le détail par fonction (CFAP) et par impôt est publié avec un an de
     // retard sur les agrégats : certaines années n'ont que les grands totaux.
     const complet =
-      expA.some((o) => o.sector === "S13" && o.cofog99.length === 4) &&
+      expTE.some((o) => o.sector === "S13" && o.cofog99.length === 4) &&
       taxA.some((o) => o.sector === "S13");
-    historique.push({ annee, recettes, depenses, solde, pib: pibA, complet });
+    // Rempli plus bas, une fois le croisement fonction × nature calculé.
+    const ligneHistorique = {
+      annee,
+      recettes,
+      depenses,
+      solde,
+      pib: pibA,
+      complet,
+      administration: null as number | null,
+    };
+    historique.push(ligneHistorique);
 
     /* ---- recettes : groupes + détail, par secteur collecteur ---- */
     const taxParSecteur = new Map<string, Map<string, number>>();
@@ -318,7 +382,7 @@ async function main() {
 
     /* ---- dépenses par fonction (COFOG), deux niveaux ---- */
     const fonctions: (Poste & { parSecteur: Record<string, number> })[] = [];
-    const expS13 = expA.filter((o) => o.sector === "S13");
+    const expS13 = expTE.filter((o) => o.sector === "S13");
     const niveau1 = expS13.filter((o) => o.cofog99.length === 4 && o.cofog99 !== "TOTA");
     for (const o of niveau1.sort((a, b) => b.value - a.value)) {
       const prefix = o.cofog99;
@@ -329,7 +393,7 @@ async function main() {
       const parSecteur: Record<string, number> = {};
       for (const s of SECTEURS) {
         if (s === "S13") continue;
-        const v = expA.find((e) => e.sector === s && e.cofog99 === prefix)?.value;
+        const v = expTE.find((e) => e.sector === s && e.cofog99 === prefix)?.value;
         if (v) parSecteur[s] = v;
       }
       fonctions.push({
@@ -375,6 +439,119 @@ async function main() {
       agents: val(s, "D1PAY"),
     }));
 
+    /* ---- l'administration d'elle-même ---- */
+    // Croisement fonction × nature : c'est lui qui distingue ce qui fait
+    // tourner un service de ce qui ne fait que transiter par sa ligne
+    // budgétaire. Sans ce croisement, la contribution française au budget de
+    // l'Union européenne compterait comme un coût d'administration.
+    const montantExp = (sector: string, cofog: string, na: string) =>
+      expA.find((o) => o.sector === sector && o.cofog99 === cofog && o.na_item === na)?.value ?? 0;
+
+    const administration = complet
+      ? (() => {
+          const groupe = (code: string) => {
+            const montant = montantExp("S13", code, "TE");
+            const parNature = NATURES_ADMIN.map((n) => ({
+              ...n,
+              montant: montantExp("S13", code, n.code),
+            }));
+            const parSecteur: Record<string, number> = {};
+            for (const s of SECTEURS) {
+              if (s === "S13") continue;
+              const v = montantExp(s, code, "TE");
+              if (v) parSecteur[s] = v;
+            }
+            return {
+              code,
+              libelle: libCofog[code],
+              montant,
+              fonctionnement: sommeNette(
+                parNature.filter((n) => n.fonctionnement).map((n) => n.montant),
+              ),
+              parSecteur,
+            };
+          };
+
+          const postes = ADMIN_INTERNE.map(groupe)
+            .filter((p) => p.montant > 0)
+            .sort((a, b) => b.montant - a.montant);
+          const montant = sommeNette(postes.map((p) => p.montant));
+
+          const natures: { code: string; libelle: string; fonctionnement: boolean; montant: number }[] =
+            NATURES_ADMIN.map((n) => ({
+              code: n.code as string,
+              libelle: n.libelle as string,
+              fonctionnement: n.fonctionnement as boolean,
+              montant: sommeNette(ADMIN_INTERNE.map((c) => montantExp("S13", c, n.code))),
+            })).filter((n) => n.montant !== 0);
+          // Les six natures retenues recouvrent le total à l'euro près sur les
+          // années observées. Si un jour ce n'était plus le cas, l'écart se
+          // verrait sur la page au lieu de disparaître dans un arrondi.
+          const residuNature = Math.round(montant - somme(natures.map((n) => n.montant)));
+          if (Math.abs(residuNature) > Math.abs(montant) * 0.0005) {
+            natures.push({
+              code: "AUTRES",
+              libelle: "Autres natures",
+              fonctionnement: false,
+              montant: residuNature,
+            });
+          }
+
+          const parSecteur: Record<string, number> = {};
+          for (const s of SECTEURS) {
+            if (s === "S13") continue;
+            const v = sommeNette(ADMIN_INTERNE.map((c) => montantExp(s, c, "TE")));
+            if (v) parSecteur[s] = v;
+          }
+
+          // La masse salariale publique ventilée par fonction : la seule façon
+          // de répondre à « combien de ces rémunérations ne sont ni un
+          // enseignant, ni un soignant, ni un policier ».
+          const remunerations = expS13
+            .filter((o) => o.cofog99.length === 4 && o.cofog99 !== "TOTA")
+            .map((o) => ({
+              code: o.cofog99,
+              libelle: libCofog[o.cofog99],
+              montant: montantExp("S13", o.cofog99, "D1"),
+            }))
+            .filter((p) => p.montant > 0)
+            .sort((a, b) => b.montant - a.montant);
+
+          return {
+            division: {
+              code: "GF01",
+              libelle: libCofog.GF01,
+              montant: montantExp("S13", "GF01", "TE"),
+            },
+            interne: {
+              montant,
+              fonctionnement: sommeNette(
+                natures.filter((n) => n.fonctionnement).map((n) => n.montant),
+              ),
+              postes,
+              natures,
+              parSecteur,
+            },
+            horsInterne: ADMIN_HORS.map((code) => ({
+              code,
+              libelle: libCofog[code],
+              montant: montantExp("S13", code, "TE"),
+            }))
+              .filter((p) => p.montant > 0)
+              .sort((a, b) => b.montant - a.montant),
+            remunerations: {
+              // `gov_10a_main` et `gov_10a_exp` publient la masse salariale à
+              // quelques centaines de millions près. On prend le total du même
+              // jeu que sa ventilation, pour que les parts bouclent.
+              total: montantExp("S13", "TOTAL", "D1"),
+              parFonction: remunerations,
+            },
+          };
+        })()
+      : null;
+
+    ligneHistorique.administration = administration?.interne.fonctionnement ?? null;
+
     const doc = {
       meta: {
         annee,
@@ -403,6 +580,7 @@ async function main() {
       fonctions,
       natures,
       administrations,
+      administration,
     };
 
     writeFileSync(join(dossier, `apu-${annee}.json`), JSON.stringify(doc, null, 1));

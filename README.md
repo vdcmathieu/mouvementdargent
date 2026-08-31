@@ -19,6 +19,13 @@ ce montant pour le seul budget de l'État voté au Parlement.
   niveaux : de « Protection sociale » à « Vieillesse », de « Santé » à « Hôpital ».
 - **Comment il est dépensé** — la même dépense vue par nature économique : prestations versées,
   rémunérations, achats, investissement, intérêts de la dette.
+- **Ce que l'administration se coûte à elle-même** — le fonctionnement de l'appareil administratif
+  pour lui-même, une fois retirés les enseignants, les soignants, les policiers et les militaires.
+  Obtenu en croisant la fonction et la nature économique de la dépense, ce qui permet d'écarter à
+  la fois la dette, la recherche fondamentale et les transferts qui ne font que transiter par une
+  ligne administrative.
+- **Les élus, à l'échelle** — la mission « Pouvoirs publics » du budget de l'État et l'indemnité
+  parlementaire, remises en regard des deux montants précédents.
 
 Les postes marqués `▸` s'ouvrent d'un clic. Les années 2015 à 2024 sont disponibles.
 
@@ -30,7 +37,7 @@ Tout provient de trois tables d'Eurostat, alimentées par l'Insee :
 | --- | --- |
 | `gov_10a_main` | Recettes, dépenses et soldes des administrations publiques |
 | `gov_10a_taxag` | Détail des impôts et cotisations sociales |
-| `gov_10a_exp` | Dépenses par fonction (CFAP/COFOG), deux niveaux |
+| `gov_10a_exp` | Dépenses par fonction (CFAP/COFOG), deux niveaux, croisées avec la nature économique |
 | `nama_10_gdp` | PIB, pour rapporter les montants à la richesse produite |
 
 On passe par Eurostat plutôt que par l'Insee en direct parce que l'API y est stable, complète et
@@ -40,6 +47,15 @@ Les chiffres sont les mêmes : c'est l'Insee qui les produit et les transmet.
 Les fichiers consolidés sont publiés dans [`public/data/`](public/data) et servis en ligne à des
 URL stables — ils sont réutilisables tels quels.
 
+Une seule section échappe à cette source : celle sur les élus.
+La comptabilité nationale ne sépare nulle part les élus des agents qu'ils dirigent — la CFAP
+s'arrête au groupe 01.1, qui réunit la direction politique, l'administration fiscale et la
+diplomatie.
+Les montants de la mission « Pouvoirs publics » et de l'indemnité parlementaire sont donc saisis à
+la main dans [`src/lib/pouvoirs.ts`](src/lib/pouvoirs.ts), depuis les rapports du Sénat et les
+fiches de l'Assemblée nationale, chacun avec son lien et sa date de relevé.
+Contrairement au reste du site, ils ne se mettent pas à jour tout seuls.
+
 ### Règles de traitement
 
 - Aucun montant n'est estimé, extrapolé ni réparti au prorata.
@@ -47,6 +63,8 @@ URL stables — ils sont réutilisables tels quels.
   « Autres » plutôt que d'être dissous dans les autres postes.
 - Le déficit est traité comme une ressource à part entière, à gauche du diagramme : sans lui, les
   deux côtés ne s'équilibreraient pas.
+- Les périmètres construits, comme « l'administration d'elle-même », montrent ce qu'ils écartent
+  au lieu de le retirer en silence, et disent ce que la source ne permet pas de séparer.
 
 Les limites connues — la CSG non isolée, les transferts entre administrations invisibles après
 consolidation, l'absence de granularité par ministère — sont détaillées sur la page
