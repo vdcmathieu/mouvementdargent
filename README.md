@@ -54,6 +54,11 @@ consolidation, l'absence de granularité par ministère — sont détaillées su
 
 ## Développement
 
+Le site est servi sous `vandecatsije.com/mouvementdargent`. Le sous-chemin est piloté par la
+variable `NEXT_PUBLIC_BASE_PATH` (vide en local, `/mouvementdargent` en production) : `basePath`
+de Next réécrit les routes et les ressources, et `src/lib/chemin.ts` couvre les `fetch` et les liens
+de téléchargement, que Next ne préfixe pas.
+
 ```bash
 pnpm install
 pnpm run data     # retélécharge et reconstruit public/data/ depuis Eurostat

@@ -6,6 +6,7 @@ import Chiffre from "./Chiffre";
 import { construireGraphe } from "@/lib/modele";
 import { euros, milliards, parHabitant, pourcent } from "@/lib/format";
 import type { Annee, Index, Mode } from "@/lib/types";
+import { chemin } from "@/lib/chemin";
 
 export default function Explorateur({
   initiale,
@@ -22,7 +23,7 @@ export default function Explorateur({
   const changerAnnee = useCallback(
     async (annee: number) => {
       if (annee === donnees.meta.annee) return;
-      const res = await fetch(`/data/apu-${annee}.json`);
+      const res = await fetch(chemin(`/data/apu-${annee}.json`));
       const suivante = (await res.json()) as Annee;
       demarrer(() => {
         setDonnees(suivante);

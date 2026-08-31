@@ -2,6 +2,7 @@ import Explorateur from "@/components/Explorateur";
 import { lireAnnee, lireIndex } from "@/lib/donnees";
 import { milliards } from "@/lib/format";
 import Link from "next/link";
+import { chemin } from "@/lib/chemin";
 
 export const dynamic = "force-static";
 
@@ -85,7 +86,7 @@ export default async function Page() {
             <ul className="mt-3 space-y-1 text-[13px]">
               <li>
                 <a
-                  href={`/data/apu-${donnees.meta.annee}.json`}
+                  href={chemin(`/data/apu-${donnees.meta.annee}.json`)}
                   className="underline decoration-trait underline-offset-4 hover:text-ink"
                 >
                   apu-{donnees.meta.annee}.json
@@ -93,7 +94,7 @@ export default async function Page() {
               </li>
               <li>
                 <a
-                  href="/data/index.json"
+                  href={chemin("/data/index.json")}
                   className="underline decoration-trait underline-offset-4 hover:text-ink"
                 >
                   index.json
