@@ -1,0 +1,254 @@
+{
+ "meta": {
+  "annee": 2025,
+  "complet": false,
+  "unite": "millions d'euros courants",
+  "genereLe": "2026-08-31T14:26:57.755Z",
+  "misAJourParEurostat": "2026-07-21T11:00:00+0200",
+  "sources": [
+   {
+    "id": "gov_10a_main",
+    "titre": "Principaux agrégats des administrations publiques, y compris recettes et dépenses",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main"
+   },
+   {
+    "id": "gov_10a_taxag",
+    "titre": "Principaux agrégats fiscaux de la comptabilité nationale",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag"
+   },
+   {
+    "id": "gov_10a_exp",
+    "titre": "Dépenses des administrations publiques par fonction (CFAP)",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp"
+   },
+   {
+    "id": "nama_10_gdp",
+    "titre": "Produit intérieur brut (PIB) et principales composantes (production, dépenses et revenu) - données annuelles",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp"
+   }
+  ]
+ },
+ "agregats": {
+  "recettes": 1561626.1,
+  "depenses": 1714137.2,
+  "solde": -152511.09999999986,
+  "pib": 2991055.9,
+  "population": 68997455,
+  "partPib": 0.5730876510866948,
+  "soldePartPib": -0.05098905038852663
+ },
+ "secteurs": {
+  "S13": {
+   "nom": "Administrations publiques",
+   "court": "Toutes",
+   "description": "L'ensemble : État, opérateurs, collectivités et sécurité sociale."
+  },
+  "S1311": {
+   "nom": "État et opérateurs",
+   "court": "État",
+   "description": "L'État au sens strict et les organismes qu'il finance et contrôle (universités, agences, Pôle emploi…)."
+  },
+  "S1313": {
+   "nom": "Collectivités locales",
+   "court": "Collectivités",
+   "description": "Communes, intercommunalités, départements et régions."
+  },
+  "S1314": {
+   "nom": "Sécurité sociale",
+   "court": "Sécurité sociale",
+   "description": "Régimes d'assurance maladie, retraite, famille, chômage, et les hôpitaux publics."
+  }
+ },
+ "recettes": [
+  {
+   "code": "COTIS",
+   "libelle": "Cotisations sociales",
+   "note": "Prélevées sur les salaires, elles financent la retraite, la maladie, la famille et le chômage.",
+   "montant": 498736,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "REVENU",
+   "libelle": "Impôts sur le revenu et le patrimoine",
+   "note": "Prélevés chaque année sur les revenus des ménages et les bénéfices des entreprises.",
+   "montant": 389922,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "CONSO",
+   "libelle": "Impôts sur la consommation",
+   "note": "Payés à chaque achat, ils sont inclus dans les prix affichés.",
+   "montant": 337591,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "PROD",
+   "libelle": "Impôts sur la production",
+   "note": "Payés par les entreprises et les propriétaires indépendamment de leurs bénéfices.",
+   "montant": 132801,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "VENTES",
+   "libelle": "Ventes et redevances",
+   "note": "Cantines, crèches, transports, tickets de musée, redevances d'occupation du domaine public…",
+   "montant": 129556.9,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "AUTRES_REC",
+   "libelle": "Autres recettes",
+   "note": "Transferts reçus, amendes, recettes exceptionnelles.",
+   "montant": 27925,
+   "parSecteur": {}
+  },
+  {
+   "code": "PATRIMOINE",
+   "libelle": "Revenus du patrimoine",
+   "note": "Dividendes des entreprises publiques, loyers, intérêts perçus.",
+   "montant": 23413.2,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "CAPITAL",
+   "libelle": "Impôts sur le capital",
+   "note": "Essentiellement les droits de succession et de donation.",
+   "montant": 21681,
+   "postes": [],
+   "parSecteur": {}
+  }
+ ],
+ "fonctions": [],
+ "natures": [
+  {
+   "code": "PRESTA_ESPECES",
+   "libelle": "Prestations sociales en argent",
+   "note": "Retraites, allocations chômage, allocations familiales, RSA : de l'argent versé directement aux personnes.",
+   "montant": 579542.3,
+   "parSecteur": {
+    "S1311": 107894,
+    "S1313": 17264,
+    "S1314": 454384.3
+   }
+  },
+  {
+   "code": "SALAIRES",
+   "libelle": "Rémunération des agents publics",
+   "note": "Les 5,7 millions d'agents : enseignants, soignants, policiers, militaires, agents des communes.",
+   "montant": 370016,
+   "parSecteur": {
+    "S1311": 184884.5,
+    "S1313": 96949.8,
+    "S1314": 88181.7
+   }
+  },
+  {
+   "code": "PRESTA_NATURE",
+   "libelle": "Remboursements de soins",
+   "note": "Ce que la sécurité sociale rembourse aux ménages : médicaments, consultations, cliniques privées.",
+   "montant": 191496.7,
+   "parSecteur": {
+    "S1311": 24519,
+    "S1313": 14125,
+    "S1314": 152852.7
+   }
+  },
+  {
+   "code": "FONCTIONNEMENT",
+   "libelle": "Achats et fonctionnement courant",
+   "note": "Tout ce que la puissance publique achète pour fonctionner : énergie, fournitures, prestataires, entretien.",
+   "montant": 162994.5,
+   "parSecteur": {
+    "S1311": 61673,
+    "S1313": 60276.9,
+    "S1314": 41044.6
+   }
+  },
+  {
+   "code": "INVEST",
+   "libelle": "Investissement",
+   "note": "Routes, écoles, hôpitaux, matériel militaire, réseaux : ce qui reste après l'année en cours.",
+   "montant": 137187.9,
+   "parSecteur": {
+    "S1311": 52750.2,
+    "S1313": 73301.5,
+    "S1314": 11136.2
+   }
+  },
+  {
+   "code": "TRANSFERTS",
+   "libelle": "Autres transferts",
+   "note": "Contribution au budget de l'Union européenne, aide au développement, transferts en capital.",
+   "montant": 135563.9,
+   "parSecteur": {
+    "S1311": 153366.5,
+    "S1313": 46009.9,
+    "S1314": 41625.5
+   }
+  },
+  {
+   "code": "INTERETS",
+   "libelle": "Intérêts de la dette",
+   "note": "Le prix de l'argent déjà emprunté les années précédentes.",
+   "montant": 66635.9,
+   "parSecteur": {
+    "S1311": 53510,
+    "S1313": 7426.9,
+    "S1314": 5890
+   }
+  },
+  {
+   "code": "SUBVENTIONS",
+   "libelle": "Subventions aux entreprises",
+   "note": "Aides directes à la production, dont les allègements de cotisations compensés.",
+   "montant": 56516,
+   "parSecteur": {
+    "S1311": 38717,
+    "S1313": 17205,
+    "S1314": 594
+   }
+  },
+  {
+   "code": "AUTRES_DEP",
+   "libelle": "Autres dépenses",
+   "note": "Postes résiduels des comptes nationaux.",
+   "montant": 14184,
+   "parSecteur": {}
+  }
+ ],
+ "administrations": [
+  {
+   "code": "S1311",
+   "nom": "État et opérateurs",
+   "court": "État",
+   "description": "L'État au sens strict et les organismes qu'il finance et contrôle (universités, agences, Pôle emploi…).",
+   "depenses": 680753.2,
+   "recettes": 550515.9,
+   "agents": 184884.5
+  },
+  {
+   "code": "S1313",
+   "nom": "Collectivités locales",
+   "court": "Collectivités",
+   "description": "Communes, intercommunalités, départements et régions.",
+   "depenses": 335482,
+   "recettes": 319926.1,
+   "agents": 96949.8
+  },
+  {
+   "code": "S1314",
+   "nom": "Sécurité sociale",
+   "court": "Sécurité sociale",
+   "description": "Régimes d'assurance maladie, retraite, famille, chômage, et les hôpitaux publics.",
+   "depenses": 803531,
+   "recettes": 796813.1,
+   "agents": 88181.7
+  }
+ ]
+}

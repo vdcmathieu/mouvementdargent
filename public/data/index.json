@@ -1,0 +1,120 @@
+{
+ "genereLe": "2026-08-31T14:26:57.756Z",
+ "misAJourParEurostat": "2026-07-21T11:00:00+0200",
+ "annees": [
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "anneesCompletes": [
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024
+ ],
+ "anneeParDefaut": 2024,
+ "historique": [
+  {
+   "annee": 2015,
+   "recettes": 1182326.8,
+   "depenses": 1268007.8,
+   "solde": -85681,
+   "pib": 2201401.6,
+   "complet": true
+  },
+  {
+   "annee": 2016,
+   "recettes": 1196622.9,
+   "depenses": 1280648.1,
+   "solde": -84025.20000000019,
+   "pib": 2231819.2,
+   "complet": true
+  },
+  {
+   "annee": 2017,
+   "recettes": 1244386.9,
+   "depenses": 1321444.6,
+   "solde": -77057.70000000019,
+   "pib": 2291680.5,
+   "complet": true
+  },
+  {
+   "annee": 2018,
+   "recettes": 1273016.1,
+   "depenses": 1327632.3,
+   "solde": -54616.19999999995,
+   "pib": 2355362.8,
+   "complet": true
+  },
+  {
+   "annee": 2019,
+   "recettes": 1287929.2,
+   "depenses": 1346154.7,
+   "solde": -58225.5,
+   "pib": 2432206.8,
+   "complet": true
+  },
+  {
+   "annee": 2020,
+   "recettes": 1223272.6,
+   "depenses": 1430357,
+   "solde": -207084.3999999999,
+   "pib": 2318276.2,
+   "complet": true
+  },
+  {
+   "annee": 2021,
+   "recettes": 1326231.8,
+   "depenses": 1491381.1,
+   "solde": -165149.30000000005,
+   "pib": 2508102.3,
+   "complet": true
+  },
+  {
+   "annee": 2022,
+   "recettes": 1424435.6,
+   "depenses": 1550331.4,
+   "solde": -125895.79999999981,
+   "pib": 2653997.2,
+   "complet": true
+  },
+  {
+   "annee": 2023,
+   "recettes": 1456350.5,
+   "depenses": 1608270.8,
+   "solde": -151920.30000000005,
+   "pib": 2833826.4,
+   "complet": true
+  },
+  {
+   "annee": 2024,
+   "recettes": 1503590.1,
+   "depenses": 1672708.2,
+   "solde": -169118.09999999986,
+   "pib": 2935236.2,
+   "complet": true
+  },
+  {
+   "annee": 2025,
+   "recettes": 1561626.1,
+   "depenses": 1714137.2,
+   "solde": -152511.09999999986,
+   "pib": 2991055.9,
+   "complet": false
+  }
+ ]
+}

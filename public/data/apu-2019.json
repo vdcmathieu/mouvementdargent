@@ -1,0 +1,826 @@
+{
+ "meta": {
+  "annee": 2019,
+  "complet": true,
+  "unite": "millions d'euros courants",
+  "genereLe": "2026-08-31T14:26:57.751Z",
+  "misAJourParEurostat": "2026-07-21T11:00:00+0200",
+  "sources": [
+   {
+    "id": "gov_10a_main",
+    "titre": "Principaux agrégats des administrations publiques, y compris recettes et dépenses",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main"
+   },
+   {
+    "id": "gov_10a_taxag",
+    "titre": "Principaux agrégats fiscaux de la comptabilité nationale",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag"
+   },
+   {
+    "id": "gov_10a_exp",
+    "titre": "Dépenses des administrations publiques par fonction (CFAP)",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp"
+   },
+   {
+    "id": "nama_10_gdp",
+    "titre": "Produit intérieur brut (PIB) et principales composantes (production, dépenses et revenu) - données annuelles",
+    "url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp"
+   }
+  ]
+ },
+ "agregats": {
+  "recettes": 1287929.2,
+  "depenses": 1346154.7,
+  "solde": -58225.5,
+  "pib": 2432206.8,
+  "population": 67382061,
+  "partPib": 0.553470494367502,
+  "soldePartPib": -0.023939370616018342
+ },
+ "secteurs": {
+  "S13": {
+   "nom": "Administrations publiques",
+   "court": "Toutes",
+   "description": "L'ensemble : État, opérateurs, collectivités et sécurité sociale."
+  },
+  "S1311": {
+   "nom": "État et opérateurs",
+   "court": "État",
+   "description": "L'État au sens strict et les organismes qu'il finance et contrôle (universités, agences, Pôle emploi…)."
+  },
+  "S1313": {
+   "nom": "Collectivités locales",
+   "court": "Collectivités",
+   "description": "Communes, intercommunalités, départements et régions."
+  },
+  "S1314": {
+   "nom": "Sécurité sociale",
+   "court": "Sécurité sociale",
+   "description": "Régimes d'assurance maladie, retraite, famille, chômage, et les hôpitaux publics."
+  }
+ },
+ "recettes": [
+  {
+   "code": "COTIS",
+   "libelle": "Cotisations sociales",
+   "note": "Prélevées sur les salaires, elles financent la retraite, la maladie, la famille et le chômage.",
+   "montant": 406074,
+   "postes": [
+    {
+     "code": "D611",
+     "libelle": "Cotisations employeurs",
+     "montant": 246386
+    },
+    {
+     "code": "D613",
+     "libelle": "Cotisations salariés et indépendants",
+     "montant": 115502
+    },
+    {
+     "code": "D612",
+     "libelle": "Cotisations imputées (employeurs publics)",
+     "montant": 44186
+    }
+   ],
+   "parSecteur": {
+    "S1311": 50365,
+    "S1313": 830,
+    "S1314": 354879
+   }
+  },
+  {
+   "code": "REVENU",
+   "libelle": "Impôts sur le revenu et le patrimoine",
+   "note": "Prélevés chaque année sur les revenus des ménages et les bénéfices des entreprises.",
+   "montant": 318194,
+   "postes": [
+    {
+     "code": "D51A_C1",
+     "libelle": "Impôt sur le revenu, CSG et CRDS",
+     "montant": 230189
+    },
+    {
+     "code": "D51B_C2",
+     "libelle": "Impôt sur les sociétés",
+     "montant": 67958
+    },
+    {
+     "code": "D59",
+     "libelle": "Autres impôts courants (dont IFI)",
+     "montant": 19971
+    }
+   ],
+   "parSecteur": {
+    "S1311": 166650,
+    "S1313": 14417,
+    "S1314": 137051
+   }
+  },
+  {
+   "code": "CONSO",
+   "libelle": "Impôts sur la consommation",
+   "note": "Payés à chaque achat, ils sont inclus dans les prix affichés.",
+   "montant": 292049,
+   "postes": [
+    {
+     "code": "D211",
+     "libelle": "TVA",
+     "montant": 174424
+    },
+    {
+     "code": "D214A",
+     "libelle": "Carburants, alcool et tabac",
+     "montant": 63614
+    },
+    {
+     "code": "D214C",
+     "libelle": "Transactions financières",
+     "montant": 18725
+    },
+    {
+     "code": "D214G",
+     "libelle": "Primes d'assurance",
+     "montant": 14882
+    },
+    {
+     "code": "D214H",
+     "libelle": "Autres taxes sur services",
+     "montant": 8230
+    },
+    {
+     "code": "D214F",
+     "libelle": "Jeux et paris",
+     "montant": 5831
+    },
+    {
+     "code": "D214D",
+     "libelle": "Immatriculation des véhicules",
+     "montant": 2843
+    },
+    {
+     "code": "AUTRES",
+     "libelle": "Autres impôts sur la consommation",
+     "montant": 3500
+    }
+   ],
+   "parSecteur": {
+    "S1311": 167558,
+    "S1313": 52012,
+    "S1314": 68979
+   }
+  },
+  {
+   "code": "PROD",
+   "libelle": "Impôts sur la production",
+   "note": "Payés par les entreprises et les propriétaires indépendamment de leurs bénéfices.",
+   "montant": 116972,
+   "postes": [
+    {
+     "code": "D29A",
+     "libelle": "Taxes foncières et sur les locaux",
+     "montant": 63638
+    },
+    {
+     "code": "D29C",
+     "libelle": "Taxes sur la masse salariale",
+     "montant": 46175
+    },
+    {
+     "code": "D29H",
+     "libelle": "Autres impôts sur la production",
+     "montant": 4435
+    },
+    {
+     "code": "D29F",
+     "libelle": "Émissions polluantes",
+     "montant": 1275
+    },
+    {
+     "code": "AUTRES",
+     "libelle": "Autres impôts sur la production",
+     "montant": 1449
+    }
+   ],
+   "parSecteur": {
+    "S1311": 14668,
+    "S1313": 74566,
+    "S1314": 26289
+   }
+  },
+  {
+   "code": "VENTES",
+   "libelle": "Ventes et redevances",
+   "note": "Cantines, crèches, transports, tickets de musée, redevances d'occupation du domaine public…",
+   "montant": 105323.8,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "AUTRES_REC",
+   "libelle": "Autres recettes",
+   "note": "Transferts reçus, amendes, recettes exceptionnelles.",
+   "montant": 17979,
+   "parSecteur": {}
+  },
+  {
+   "code": "PATRIMOINE",
+   "libelle": "Revenus du patrimoine",
+   "note": "Dividendes des entreprises publiques, loyers, intérêts perçus.",
+   "montant": 15859.4,
+   "postes": [],
+   "parSecteur": {}
+  },
+  {
+   "code": "CAPITAL",
+   "libelle": "Impôts sur le capital",
+   "note": "Essentiellement les droits de succession et de donation.",
+   "montant": 15478,
+   "postes": [
+    {
+     "code": "D91A",
+     "libelle": "Successions et donations",
+     "montant": 15169
+    },
+    {
+     "code": "AUTRES",
+     "libelle": "Autres impôts sur le capital",
+     "montant": 309
+    }
+   ],
+   "parSecteur": {
+    "S1311": 15169
+   }
+  }
+ ],
+ "fonctions": [
+  {
+   "code": "GF10",
+   "libelle": "Protection sociale",
+   "montant": 582386.2,
+   "postes": [
+    {
+     "code": "GF1002",
+     "libelle": "Vieillesse",
+     "montant": 324805.7
+    },
+    {
+     "code": "GF1001",
+     "libelle": "Maladie et invalidité",
+     "montant": 67575.8
+    },
+    {
+     "code": "GF1004",
+     "libelle": "Famille et enfants",
+     "montant": 55363
+    },
+    {
+     "code": "GF1005",
+     "libelle": "Chômage",
+     "montant": 44881.4
+    },
+    {
+     "code": "GF1003",
+     "libelle": "Survivants",
+     "montant": 35415.8
+    },
+    {
+     "code": "GF1007",
+     "libelle": "Exclusion sociale n.c.a.",
+     "montant": 30057.5
+    },
+    {
+     "code": "GF1006",
+     "libelle": "Logement",
+     "montant": 20277.1
+    },
+    {
+     "code": "GF1009",
+     "libelle": "Protection sociale n.c.a.",
+     "montant": 4009.9
+    }
+   ],
+   "parSecteur": {
+    "S1311": 125405.5,
+    "S1313": 51258.4,
+    "S1314": 429177.5
+   }
+  },
+  {
+   "code": "GF07",
+   "libelle": "Santé",
+   "montant": 198147.3,
+   "postes": [
+    {
+     "code": "GF0703",
+     "libelle": "Services hospitaliers",
+     "montant": 79825.3
+    },
+    {
+     "code": "GF0702",
+     "libelle": "Services ambulatoires",
+     "montant": 71891.3
+    },
+    {
+     "code": "GF0701",
+     "libelle": "Produits, appareils et matériels médicaux",
+     "montant": 34640.7
+    },
+    {
+     "code": "GF0704",
+     "libelle": "Services de santé publique",
+     "montant": 5436.2
+    },
+    {
+     "code": "GF0705",
+     "libelle": "R & D dans le domaine de la santé",
+     "montant": 5304.1
+    },
+    {
+     "code": "GF0706",
+     "libelle": "Santé n.c.a.",
+     "montant": 1049.7
+    }
+   ],
+   "parSecteur": {
+    "S1311": 11509.4,
+    "S1313": 1856.3,
+    "S1314": 188210.1
+   }
+  },
+  {
+   "code": "GF01",
+   "libelle": "Services généraux des administrations publiques",
+   "montant": 145857.8,
+   "postes": [
+    {
+     "code": "GF0103",
+     "libelle": "Services généraux",
+     "montant": 43142.6
+    },
+    {
+     "code": "GF0107",
+     "libelle": "Opérations concernant la dette publique",
+     "montant": 40027.5
+    },
+    {
+     "code": "GF0101",
+     "libelle": "Fonctionnement des organes exécutifs et législatifs, affaires financières et fiscales, affaires étrangères",
+     "montant": 39364
+    },
+    {
+     "code": "GF0104",
+     "libelle": "Recherche fondamentale",
+     "montant": 16927.7
+    },
+    {
+     "code": "GF0102",
+     "libelle": "Aide économique extérieure",
+     "montant": 5721
+    },
+    {
+     "code": "GF0106",
+     "libelle": "Services généraux des administrations publiques n.c.a.",
+     "montant": 674.6
+    },
+    {
+     "code": "GF0105",
+     "libelle": "R & D concernant des services généraux des administrations publiques",
+     "montant": 0.4
+    },
+    {
+     "code": "GF0108",
+     "libelle": "Transferts de caractère général entre administrations publiques",
+     "montant": 0.1
+    }
+   ],
+   "parSecteur": {
+    "S1311": 141171,
+    "S1313": 49227.1,
+    "S1314": 5203.6
+   }
+  },
+  {
+   "code": "GF04",
+   "libelle": "Affaires économiques",
+   "montant": 129805.5,
+   "postes": [
+    {
+     "code": "GF0405",
+     "libelle": "Transports",
+     "montant": 57257.9
+    },
+    {
+     "code": "GF0401",
+     "libelle": "Tutelle de l'économie générale, des échanges et de l'emploi",
+     "montant": 27154.4
+    },
+    {
+     "code": "GF0408",
+     "libelle": "R & D concernant les affaires économiques",
+     "montant": 17289.9
+    },
+    {
+     "code": "GF0403",
+     "libelle": "Combustibles et énergie",
+     "montant": 11038.1
+    },
+    {
+     "code": "GF0407",
+     "libelle": "Autres branches d'activité",
+     "montant": 9064.9
+    },
+    {
+     "code": "GF0402",
+     "libelle": "Agriculture, sylviculture, pêche et chasse",
+     "montant": 5116.1
+    },
+    {
+     "code": "GF0409",
+     "libelle": "Affaires économiques n.c.a.",
+     "montant": 1866.2
+    },
+    {
+     "code": "GF0406",
+     "libelle": "Communications",
+     "montant": 552.3
+    },
+    {
+     "code": "GF0404",
+     "libelle": "Industries extractives et manufacturières, construction",
+     "montant": 465.6
+    }
+   ],
+   "parSecteur": {
+    "S1311": 85510.6,
+    "S1313": 54000.5,
+    "S1314": 902
+   }
+  },
+  {
+   "code": "GF09",
+   "libelle": "Enseignement",
+   "montant": 122429.5,
+   "postes": [
+    {
+     "code": "GF0902",
+     "libelle": "Enseignement secondaire",
+     "montant": 53793.8
+    },
+    {
+     "code": "GF0901",
+     "libelle": "Enseignement préélémentaire et primaire",
+     "montant": 33834.8
+    },
+    {
+     "code": "GF0906",
+     "libelle": "Services annexes à l'enseignement",
+     "montant": 15191.4
+    },
+    {
+     "code": "GF0904",
+     "libelle": "Enseignement supérieur",
+     "montant": 11030.6
+    },
+    {
+     "code": "GF0905",
+     "libelle": "Enseignement non défini par niveau",
+     "montant": 6941.6
+    },
+    {
+     "code": "GF0903",
+     "libelle": "Enseignement postsecondaire non supérieur",
+     "montant": 1038.1
+    },
+    {
+     "code": "GF0908",
+     "libelle": "Enseignement n.c.a.",
+     "montant": 589.6
+    },
+    {
+     "code": "GF0907",
+     "libelle": "R & D dans le domaine de l'enseignement",
+     "montant": 9.5
+    }
+   ],
+   "parSecteur": {
+    "S1311": 87564.7,
+    "S1313": 38258.3
+   }
+  },
+  {
+   "code": "GF02",
+   "libelle": "Défense",
+   "montant": 41887.6,
+   "postes": [
+    {
+     "code": "GF0201",
+     "libelle": "Défense militaire",
+     "montant": 35427.4
+    },
+    {
+     "code": "GF0205",
+     "libelle": "Défense n.c.a.",
+     "montant": 2939.6
+    },
+    {
+     "code": "GF0203",
+     "libelle": "Aide militaire à des pays étrangers",
+     "montant": 1888.9
+    },
+    {
+     "code": "GF0204",
+     "libelle": "R & D concernant la défense",
+     "montant": 1399.3
+    },
+    {
+     "code": "GF0202",
+     "libelle": "Défense civile",
+     "montant": 232.5
+    }
+   ],
+   "parSecteur": {
+    "S1311": 41889.7
+   }
+  },
+  {
+   "code": "GF03",
+   "libelle": "Ordre et sécurité publics",
+   "montant": 40211.1,
+   "postes": [
+    {
+     "code": "GF0301",
+     "libelle": "Services de police",
+     "montant": 22721.2
+    },
+    {
+     "code": "GF0302",
+     "libelle": "Services de protection civile",
+     "montant": 6399.4
+    },
+    {
+     "code": "GF0303",
+     "libelle": "Tribunaux",
+     "montant": 6288.7
+    },
+    {
+     "code": "GF0304",
+     "libelle": "Administration pénitentiaire",
+     "montant": 3769
+    },
+    {
+     "code": "GF0306",
+     "libelle": "Ordre et sécurité publics n.c.a.",
+     "montant": 1017.3
+    },
+    {
+     "code": "GF0305",
+     "libelle": "R & D concernant l'ordre et la sécurité publics",
+     "montant": 15.5
+    }
+   ],
+   "parSecteur": {
+    "S1311": 32377.8,
+    "S1313": 8061.7
+   }
+  },
+  {
+   "code": "GF08",
+   "libelle": "Loisirs, culture et culte",
+   "montant": 35443.3,
+   "postes": [
+    {
+     "code": "GF0802",
+     "libelle": "Services culturels",
+     "montant": 15440.5
+    },
+    {
+     "code": "GF0801",
+     "libelle": "Services récréatifs et sportifs",
+     "montant": 13525.1
+    },
+    {
+     "code": "GF0803",
+     "libelle": "Services de radiodiffusion, de télévision et d'édition",
+     "montant": 5899.9
+    },
+    {
+     "code": "GF0804",
+     "libelle": "Culte et autres services communautaires",
+     "montant": 495
+    },
+    {
+     "code": "GF0806",
+     "libelle": "Loisirs, culture et culte n.c.a.",
+     "montant": 82.9
+    }
+   ],
+   "parSecteur": {
+    "S1311": 11641.6,
+    "S1313": 24278.2
+   }
+  },
+  {
+   "code": "GF06",
+   "libelle": "Logements et équipements collectifs",
+   "montant": 26978.1,
+   "postes": [
+    {
+     "code": "GF0602",
+     "libelle": "Équipements collectifs",
+     "montant": 15294.6
+    },
+    {
+     "code": "GF0601",
+     "libelle": "Logements",
+     "montant": 7100.1
+    },
+    {
+     "code": "GF0603",
+     "libelle": "Alimentation en eau",
+     "montant": 2630.9
+    },
+    {
+     "code": "GF0604",
+     "libelle": "Éclairage public",
+     "montant": 1537.5
+    },
+    {
+     "code": "GF0606",
+     "libelle": "Logement et équipements collectifs n.c.a.",
+     "montant": 415
+    }
+   ],
+   "parSecteur": {
+    "S1311": 6063.6,
+    "S1313": 21761
+   }
+  },
+  {
+   "code": "GF05",
+   "libelle": "Protection de l'environnement",
+   "montant": 23011.5,
+   "postes": [
+    {
+     "code": "GF0501",
+     "libelle": "Gestion des déchets",
+     "montant": 12033.9
+    },
+    {
+     "code": "GF0502",
+     "libelle": "Gestion des eaux usées",
+     "montant": 4420.4
+    },
+    {
+     "code": "GF0503",
+     "libelle": "Lutte contre la pollution",
+     "montant": 2452.9
+    },
+    {
+     "code": "GF0504",
+     "libelle": "Préservation de la diversité biologique et protection de la nature",
+     "montant": 1727.8
+    },
+    {
+     "code": "GF0506",
+     "libelle": "Protection de l'environnement n.c.a.",
+     "montant": 1523.1
+    },
+    {
+     "code": "GF0505",
+     "libelle": "R & D dans le domaine de la protection de l'environnement",
+     "montant": 853.4
+    }
+   ],
+   "parSecteur": {
+    "S1311": 3525.1,
+    "S1313": 19988.5
+   }
+  }
+ ],
+ "natures": [
+  {
+   "code": "PRESTA_ESPECES",
+   "libelle": "Prestations sociales en argent",
+   "note": "Retraites, allocations chômage, allocations familiales, RSA : de l'argent versé directement aux personnes.",
+   "montant": 470560.4,
+   "parSecteur": {
+    "S1311": 89888,
+    "S1313": 15542,
+    "S1314": 365130.4
+   }
+  },
+  {
+   "code": "SALAIRES",
+   "libelle": "Rémunération des agents publics",
+   "note": "Les 5,7 millions d'agents : enseignants, soignants, policiers, militaires, agents des communes.",
+   "montant": 300632,
+   "parSecteur": {
+    "S1311": 153016,
+    "S1313": 80281,
+    "S1314": 67335
+   }
+  },
+  {
+   "code": "PRESTA_NATURE",
+   "libelle": "Remboursements de soins",
+   "note": "Ce que la sécurité sociale rembourse aux ménages : médicaments, consultations, cliniques privées.",
+   "montant": 149581.6,
+   "parSecteur": {
+    "S1311": 23816,
+    "S1313": 12899,
+    "S1314": 112866.6
+   }
+  },
+  {
+   "code": "FONCTIONNEMENT",
+   "libelle": "Achats et fonctionnement courant",
+   "note": "Tout ce que la puissance publique achète pour fonctionner : énergie, fournitures, prestataires, entretien.",
+   "montant": 126711.6,
+   "parSecteur": {
+    "S1311": 46039.2,
+    "S1313": 50988.5,
+    "S1314": 29683.9
+   }
+  },
+  {
+   "code": "TRANSFERTS",
+   "libelle": "Autres transferts",
+   "note": "Contribution au budget de l'Union européenne, aide au développement, transferts en capital.",
+   "montant": 105498.8,
+   "parSecteur": {
+    "S1311": 135262.7,
+    "S1313": 33239.8,
+    "S1314": 29671.3
+   }
+  },
+  {
+   "code": "INVEST",
+   "libelle": "Investissement",
+   "note": "Routes, écoles, hôpitaux, matériel militaire, réseaux : ce qui reste après l'année en cours.",
+   "montant": 104657.1,
+   "parSecteur": {
+    "S1311": 39729,
+    "S1313": 56140.8,
+    "S1314": 8787.3
+   }
+  },
+  {
+   "code": "SUBVENTIONS",
+   "libelle": "Subventions aux entreprises",
+   "note": "Aides directes à la production, dont les allègements de cotisations compensés.",
+   "montant": 40616,
+   "parSecteur": {
+    "S1311": 24509,
+    "S1313": 15205,
+    "S1314": 902
+   }
+  },
+  {
+   "code": "INTERETS",
+   "libelle": "Intérêts de la dette",
+   "note": "Le prix de l'argent déjà emprunté les années précédentes.",
+   "montant": 36868.2,
+   "parSecteur": {
+    "S1311": 31612.2,
+    "S1313": 2050.9,
+    "S1314": 3218.1
+   }
+  },
+  {
+   "code": "AUTRES_DEP",
+   "libelle": "Autres dépenses",
+   "note": "Postes résiduels des comptes nationaux.",
+   "montant": 11029,
+   "parSecteur": {}
+  }
+ ],
+ "administrations": [
+  {
+   "code": "S1311",
+   "nom": "État et opérateurs",
+   "court": "État",
+   "description": "L'État au sens strict et les organismes qu'il finance et contrôle (universités, agences, Pôle emploi…).",
+   "depenses": 546659.1,
+   "recettes": 478890.6,
+   "agents": 153016
+  },
+  {
+   "code": "S1313",
+   "nom": "Collectivités locales",
+   "court": "Collectivités",
+   "description": "Communes, intercommunalités, départements et régions.",
+   "depenses": 268690,
+   "recettes": 266146.2,
+   "agents": 80281
+  },
+  {
+   "code": "S1314",
+   "nom": "Sécurité sociale",
+   "court": "Sécurité sociale",
+   "description": "Régimes d'assurance maladie, retraite, famille, chômage, et les hôpitaux publics.",
+   "depenses": 623493.6,
+   "recettes": 635580.4,
+   "agents": 67335
+  }
+ ]
+}
