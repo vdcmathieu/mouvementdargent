@@ -4,7 +4,7 @@
     entre), trois rubans qui s'ouvrent vers la droite (l'argent qui sort), dans
     l'ordre d'empilement des emplois par fonction. Les teintes sortent de
     src/lib/palette.ts, le fond est le papier crème de globals.css.
-    Source de vérité de favicon.ico et apple-icon.png : `pnpm run icones`.
+    Source de vérité de icon.png et apple-icon.png : `pnpm run icones`.
   -->
   <rect width="32" height="32" rx="7" fill="#fbfaf7"/>
   <path d="M8 3C21.64 3 16.36 3 30 3L30 11.53C16.36 11.53 21.64 15.32 8 15.32Z" fill="#8a3aa0"/>
