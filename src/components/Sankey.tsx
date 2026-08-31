@@ -38,7 +38,7 @@ export default function Sankey({
 }) {
   const conteneur = useRef<HTMLDivElement>(null);
   const [largeur, setLargeur] = useState(LARGEUR_MIN);
-  const [survol, setSurvol] = useState<NoeudCalcule | null>(null);
+  const [survolId, setSurvolId] = useState<string | null>(null);
   const [curseur, setCurseur] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -108,7 +108,11 @@ export default function Sankey({
   }, [graphe, largeur, hauteur]);
 
   const chemin = sankeyLinkHorizontal<Noeud, object>();
-  const survolId = survol?.id ?? null;
+
+  // On ne retient que l'identifiant du nœud survolé, jamais l'objet : après un
+  // changement d'année ou de mode, l'infobulle se recalcule sur le graphe
+  // courant au lieu d'afficher des montants périmés.
+  const survol = calcule.nodes.find((n) => n.id === survolId) ?? null;
 
   const opacite = (n: NoeudCalcule) =>
     survolId === null || survolId === n.id || n.id === "APU" ? 1 : 0.5;
@@ -125,7 +129,7 @@ export default function Sankey({
         className="block select-none"
         role="img"
         aria-label="Diagramme de flux des recettes et des dépenses publiques"
-        onMouseLeave={() => setSurvol(null)}
+        onMouseLeave={() => setSurvolId(null)}
       >
         <g>
           {calcule.links.map((l, i) => (
@@ -160,14 +164,14 @@ export default function Sankey({
                 key={n.id}
                 className={cliquable ? "cursor-pointer" : "cursor-default"}
                 onMouseMove={(e) => {
-                  setSurvol(n);
+                  setSurvolId(n.id);
                   const r = conteneur.current?.getBoundingClientRect();
                   if (r) setCurseur({ x: e.clientX - r.left, y: e.clientY - r.top });
                 }}
                 onClick={() => cliquable && onBasculer(n.parent)}
                 tabIndex={cliquable ? 0 : -1}
-                onFocus={() => setSurvol(n)}
-                onBlur={() => setSurvol(null)}
+                onFocus={() => setSurvolId(n.id)}
+                onBlur={() => setSurvolId(null)}
                 onKeyDown={(e) => {
                   if ((e.key === "Enter" || e.key === " ") && cliquable) {
                     e.preventDefault();
