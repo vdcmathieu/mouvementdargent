@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "data": "tsx scripts/build-data.ts",
-    "apercu": "node scripts/apercu.mjs"
+    "apercu": "node scripts/apercu.mjs",
+    "icones": "node scripts/icones.mjs"
   },
   "dependencies": {
     "d3-format": "^3.1.2",

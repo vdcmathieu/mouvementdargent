@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Mouvement d'argent">
+  <!--
+    Le diagramme du site en miniature : un tronc bleu à gauche (l'argent qui
+    entre), trois rubans qui s'ouvrent vers la droite (l'argent qui sort), dans
+    l'ordre d'empilement des emplois par fonction. Les teintes sortent de
+    src/lib/palette.ts, le fond est le papier crème de globals.css.
+    Source de vérité de favicon.ico et apple-icon.png : `pnpm run icones`.
+  -->
+  <rect width="32" height="32" rx="7" fill="#fbfaf7"/>
+  <path d="M8 3C21.64 3 16.36 3 30 3L30 11.53C16.36 11.53 21.64 15.32 8 15.32Z" fill="#8a3aa0"/>
+  <path d="M8 15.32C21.64 15.32 16.36 15.53 30 15.53L30 21.21C16.36 21.21 21.64 23.53 8 23.53Z" fill="#227f53"/>
+  <path d="M8 23.53C21.64 23.53 16.36 25.21 30 25.21L30 29C16.36 29 21.64 29 8 29Z" fill="#b07a00"/>
+  <rect x="2" y="3" width="6" height="26" rx="1" fill="#063898"/>
+</svg>
