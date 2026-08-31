@@ -1,22 +1,37 @@
 "use client";
 
 import { useCallback, useMemo, useState, useTransition } from "react";
+import Entete from "./Entete";
+import Controles from "./Controles";
+import Reperes from "./Reperes";
 import Sankey from "./Sankey";
-import Chiffre from "./Chiffre";
-import { construireGraphe } from "@/lib/modele";
-import { euros, milliards, parHabitant, pourcent } from "@/lib/format";
+import Palmares from "./Palmares";
+import QuiDepense from "./QuiDepense";
+import Historique from "./Historique";
+import { classer, classerRessources, construireGraphe } from "@/lib/modele";
+import {
+  LIBELLES_UNITES,
+  euros,
+  formater,
+  milliards,
+  pourcent,
+  type Unite,
+} from "@/lib/format";
 import type { Annee, Index, Mode } from "@/lib/types";
 import { chemin } from "@/lib/chemin";
 
 export default function Explorateur({
   initiale,
   index,
+  maj,
 }: {
   initiale: Annee;
   index: Index;
+  maj: string;
 }) {
   const [donnees, setDonnees] = useState(initiale);
   const [mode, setMode] = useState<Mode>("fonction");
+  const [unite, setUnite] = useState<Unite>("milliards");
   const [deplies, setDeplies] = useState<ReadonlySet<string>>(new Set());
   const [chargement, demarrer] = useTransition();
 
@@ -42,171 +57,304 @@ export default function Explorateur({
     });
   }, []);
 
+  // La ventilation par fonction arrive un an après les agrégats. Sur une année
+  // trop récente, on bascule sur la lecture par nature et on le dit, plutôt
+  // que d'afficher un diagramme amputé de son côté droit.
+  const detailFonction = donnees.fonctions.length > 0;
+  const modeEffectif: Mode = detailFonction ? mode : "nature";
+  const replie = !detailFonction && mode === "fonction";
+
   const graphe = useMemo(
-    () => construireGraphe(donnees, mode, deplies),
-    [donnees, mode, deplies],
+    () => construireGraphe(donnees, modeEffectif, deplies),
+    [donnees, modeEffectif, deplies],
   );
 
   const { agregats, meta } = donnees;
-  const pop = agregats.population;
+  const bareme = useMemo(
+    () => ({ total: agregats.depenses, population: agregats.population }),
+    [agregats.depenses, agregats.population],
+  );
+
+  const emplois = modeEffectif === "fonction" ? donnees.fonctions : donnees.natures;
+  const rangsEmplois = useMemo(
+    () => classer(emplois, agregats.depenses),
+    [emplois, agregats.depenses],
+  );
+  const rangsFonctions = useMemo(
+    () => classer(donnees.fonctions, agregats.depenses),
+    [donnees.fonctions, agregats.depenses],
+  );
+  const rangsRessources = useMemo(() => classerRessources(donnees), [donnees]);
 
   // Ce que coûte le fonctionnement de l'appareil public lui-même.
   const nature = (code: string) => donnees.natures.find((n) => n.code === code)?.montant ?? 0;
   const fonctionnement = nature("SALAIRES") + nature("FONCTIONNEMENT");
   const redistribution = nature("PRESTA_ESPECES") + nature("PRESTA_NATURE");
   const interets = nature("INTERETS");
+  const emprunt = Math.abs(Math.min(agregats.solde, 0));
 
-  const anneesCompletes = new Set(index.anneesCompletes);
+  const anneesCompletes = useMemo(() => new Set(index.anneesCompletes), [index.anneesCompletes]);
+  const attenue = chargement ? "opacity-45 transition-opacity" : "transition-opacity";
 
   return (
     <>
-      <div className="border-b border-trait bg-paper-2">
-        <div className="mx-auto grid max-w-[1180px] grid-cols-2 gap-x-5 gap-y-6 px-6 py-7 sm:grid-cols-4 sm:gap-x-7">
-          <Chiffre
-            libelle="Recettes"
-            valeur={milliards(agregats.recettes)}
-            detail={`${parHabitant(agregats.recettes, pop)} par habitant`}
-          />
-          <Chiffre
-            libelle="Dépenses"
-            valeur={milliards(agregats.depenses)}
-            detail={
-              agregats.partPib
-                ? `${pourcent(agregats.partPib)} du PIB`
-                : `${parHabitant(agregats.depenses, pop)} par habitant`
-            }
-          />
-          <Chiffre
-            libelle="Déficit"
-            valeur={milliards(Math.abs(agregats.solde))}
-            detail={
-              agregats.soldePartPib
-                ? `${pourcent(Math.abs(agregats.soldePartPib))} du PIB`
-                : undefined
-            }
-            ton="rouge"
-          />
-          <Chiffre
-            libelle="Soit par habitant"
-            valeur={`${euros((agregats.depenses * 1e6) / pop)}`}
-            detail="de dépense publique par personne"
-          />
-        </div>
-      </div>
+      <Entete donnees={donnees} maj={maj} />
 
-      <div className="mx-auto max-w-[1180px] px-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 py-6">
-          <div className="flex w-full rounded-full border border-trait bg-paper-2 p-1 sm:w-auto">
-            <Onglet actif={mode === "fonction"} onClick={() => setMode("fonction")}>
-              À quoi ça sert
-            </Onglet>
-            <Onglet actif={mode === "nature"} onClick={() => setMode("nature")}>
-              Comment c&apos;est dépensé
-            </Onglet>
+      <Controles
+        annee={meta.annee}
+        annees={index.annees}
+        anneesCompletes={anneesCompletes}
+        onAnnee={changerAnnee}
+        mode={mode}
+        onMode={setMode}
+        detailFonction={detailFonction}
+        unite={unite}
+        onUnite={setUnite}
+        chargement={chargement}
+      />
+
+      <div className={attenue}>
+        <section id="reperes" className="border-b border-trait bg-fond-2 py-7">
+          <div className="mx-auto max-w-[1240px] px-5">
+            <Reperes donnees={donnees} index={index} />
           </div>
+        </section>
 
-          <div className="flex items-center gap-4">
+        <div className="mx-auto max-w-[1240px] px-5">
+          <Section
+            numero="01"
+            id="flux"
+            titre="Le mouvement, à l'échelle"
+            chapo={
+              <>
+                Chaque ruban est un flux d&apos;argent, épais à proportion de son montant. À gauche
+                tout ce qui finance l&apos;année, y compris ce qui est emprunté ; au centre le total ;
+                à droite ce qu&apos;il paie.{" "}
+                <span className="font-medium text-encre">
+                  Cliquez sur un poste marqué ▸ pour l&apos;ouvrir.
+                </span>
+              </>
+            }
+          >
+            {replie ? <Repli annee={meta.annee} /> : null}
+
+            <Legende mode={modeEffectif} />
+
+            <div className="mt-4">
+              <Sankey graphe={graphe} bareme={bareme} unite={unite} onBasculer={basculer} />
+            </div>
+
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-4 border-t border-trait pt-3 text-[12px] uppercase tracking-[0.08em] text-encre-2">
+              <span>D&apos;où vient l&apos;argent</span>
+              <span className="normal-case tracking-normal text-encre-3">
+                {LIBELLES_UNITES[unite].long}
+              </span>
+              <span>
+                {modeEffectif === "fonction" ? "À quoi il sert" : "Sous quelle forme il sort"}
+              </span>
+            </div>
+
             {deplies.size > 0 ? (
               <button
                 onClick={() => setDeplies(new Set())}
-                className="text-[13px] text-ink-doux underline decoration-trait underline-offset-4 hover:text-ink"
+                className="lien mt-3 text-[13px] text-encre-2 hover:text-encre"
               >
                 Tout replier
               </button>
             ) : null}
-            <label className="flex items-center gap-2 text-[13px] text-ink-doux">
-              Année
-              <select
-                value={meta.annee}
-                onChange={(e) => changerAnnee(Number(e.target.value))}
-                className="rounded-md border border-trait bg-paper px-2.5 py-1.5 text-[13px] font-medium text-ink tabular-nums outline-none focus:border-ink"
+
+            <p className="mt-4 text-[12.5px] leading-relaxed text-encre-3 lg:hidden">
+              Le diagramme se fait glisser horizontalement. Sur un petit écran, la liste classée
+              ci-dessous se lit plus confortablement.
+            </p>
+          </Section>
+
+          <Section
+            numero="02"
+            id="detail"
+            titre="Poste par poste"
+            chapo={
+              <>
+                Le même contenu, classé du plus gros au plus petit. Chaque ligne porte son
+                montant écrit, ici {LIBELLES_UNITES[unite].long.toLowerCase()}. Ouvrez une ligne
+                pour voir ce qu&apos;elle contient.
+              </>
+            }
+          >
+            <div className="grid gap-10 md:grid-cols-2 md:gap-12">
+              <Palmares
+                titre="D'où vient l'argent"
+                soustitre={`Les recettes de l'année, plus les ${milliards(emprunt)} empruntés pour couvrir l'écart. Les deux colonnes portent donc le même total.`}
+                rangs={rangsRessources}
+                bareme={bareme}
+                unite={unite}
+              />
+              <Palmares
+                titre={modeEffectif === "fonction" ? "À quoi il sert" : "Sous quelle forme il sort"}
+                soustitre={
+                  modeEffectif === "fonction"
+                    ? "Classification européenne des fonctions des administrations publiques (CFAP)."
+                    : "Nature économique de la dépense : ce que l'argent devient en sortant."
+                }
+                rangs={rangsEmplois}
+                bareme={bareme}
+                unite={unite}
+              />
+            </div>
+          </Section>
+
+          <Section
+            numero="03"
+            id="administrations"
+            titre="Qui dépense"
+            chapo={
+              <>
+                « L&apos;État » ne dépense qu&apos;un peu plus d&apos;un tiers de l&apos;argent
+                public. Le reste passe par la sécurité sociale et par les collectivités locales,
+                qui ont leurs propres recettes et leurs propres décisions.
+              </>
+            }
+          >
+            <QuiDepense
+              donnees={donnees}
+              rangs={rangsFonctions}
+              bareme={bareme}
+              unite={unite}
+            />
+          </Section>
+
+          <Section
+            numero="04"
+            id="trajectoire"
+            titre={`Depuis ${index.annees[0]}`}
+            chapo={
+              <>
+                Les dépenses et les recettes d&apos;une seule année ne disent pas si l&apos;on est
+                dans une situation exceptionnelle ou ordinaire. Survolez une année pour la lire ;
+                cliquez pour recharger toute la page dessus.
+              </>
+            }
+          >
+            <Historique index={index} annee={meta.annee} onAnnee={changerAnnee} />
+          </Section>
+
+          <Section
+            numero="05"
+            id="retenir"
+            titre="Trois choses à retenir"
+            chapo={
+              <>
+                Les trois lectures qui changent le plus souvent l&apos;idée qu&apos;on se fait de
+                la dépense publique.
+              </>
+            }
+          >
+            <div className="grid gap-8 md:grid-cols-3 md:gap-10">
+              <Bloc
+                titre="L'essentiel est reversé, pas consommé"
+                montant={formater(redistribution, unite, bareme)}
+                part={unite === "part" ? null : pourcent(redistribution / agregats.depenses)}
               >
-                {[...index.annees].reverse().map((a) => (
-                  <option key={a} value={a} disabled={!anneesCompletes.has(a)}>
-                    {a}
-                    {anneesCompletes.has(a) ? "" : " — détail non publié"}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+                Retraites, allocations chômage et familiales, remboursements de soins. Cet argent
+                traverse la sphère publique sans y rester : il est collecté puis reversé aux
+                ménages. Le réduire, c&apos;est réduire ce que touchent des gens.
+              </Bloc>
+              <Bloc
+                titre="Faire tourner l'appareil public"
+                montant={formater(fonctionnement, unite, bareme)}
+                part={unite === "part" ? null : pourcent(fonctionnement / agregats.depenses)}
+              >
+                Les rémunérations des agents publics et tout ce que les administrations achètent
+                pour fonctionner. L&apos;essentiel n&apos;est pas de l&apos;administration au sens
+                péjoratif : ce sont les salaires des enseignants, des soignants, des policiers et
+                des militaires, c&apos;est-à-dire le service lui-même.
+              </Bloc>
+              <Bloc
+                titre="Les intérêts ne financent aucun service"
+                montant={formater(interets, unite, bareme)}
+                part={unite === "part" ? null : pourcent(interets / agregats.depenses)}
+              >
+                Le prix des emprunts passés, soit{" "}
+                {euros((interets * 1e6) / agregats.population)} par habitant et par an. Cette
+                charge ne paie ni un professeur, ni un lit d&apos;hôpital : c&apos;est le coût des
+                déficits accumulés les années précédentes.
+              </Bloc>
+            </div>
+          </Section>
         </div>
-
-        <p className="mb-3 text-[13.5px] text-ink-doux">
-          Chaque ruban est un flux d&apos;argent, à l&apos;échelle.{" "}
-          <span className="text-ink">Cliquez sur un poste marqué ▸</span> pour l&apos;ouvrir et
-          voir ce qu&apos;il contient.
-          <span className="sm:hidden"> Faites glisser le diagramme pour le parcourir.</span>
-        </p>
-
-        <div className={chargement ? "opacity-40 transition-opacity" : "transition-opacity"}>
-          <Sankey graphe={graphe} population={pop} onBasculer={basculer} />
-        </div>
-
-        <div className="mt-2 flex flex-wrap justify-between gap-4 border-t border-trait pt-3 text-[12px] uppercase tracking-[0.08em] text-ink-doux">
-          <span>D&apos;où vient l&apos;argent</span>
-          <span>
-            {mode === "fonction" ? "À quoi il sert (fonctions CFAP)" : "Sous quelle forme il sort"}
-          </span>
-        </div>
-
-        <section className="mt-14 grid gap-9 border-t border-trait pt-10 md:mt-16 md:grid-cols-3">
-          <div className="md:col-span-3">
-            <h2 className="font-titre text-2xl">
-              Combien coûte le fonctionnement de la machine ?
-            </h2>
-          </div>
-          <Bloc
-            titre="Faire tourner l'appareil public"
-            montant={milliards(fonctionnement)}
-            part={pourcent(fonctionnement / agregats.depenses)}
-          >
-            Les rémunérations des agents publics et tout ce que les administrations achètent pour
-            fonctionner. L&apos;essentiel n&apos;est pas de l&apos;administration au sens péjoratif :
-            ce sont les salaires des enseignants, des soignants, des policiers et des militaires,
-            c&apos;est-à-dire le service lui-même.
-          </Bloc>
-          <Bloc
-            titre="Redistribué directement"
-            montant={milliards(redistribution)}
-            part={pourcent(redistribution / agregats.depenses)}
-          >
-            Retraites, allocations chômage et familiales, remboursements de soins. Cet argent
-            traverse la sphère publique sans y rester : il est collecté puis reversé aux ménages.
-          </Bloc>
-          <Bloc
-            titre="Intérêts de la dette"
-            montant={milliards(interets)}
-            part={pourcent(interets / agregats.depenses)}
-          >
-            Le prix des emprunts passés. Cette charge ne finance aucun service : c&apos;est le coût
-            des déficits accumulés les années précédentes.
-          </Bloc>
-        </section>
       </div>
     </>
   );
 }
 
-function Onglet({
-  actif,
-  onClick,
+function Section({
+  numero,
+  id,
+  titre,
+  chapo,
   children,
 }: {
-  actif: boolean;
-  onClick: () => void;
+  numero: string;
+  id: string;
+  titre: string;
+  chapo: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <button
-      onClick={onClick}
-      aria-pressed={actif}
-      className={`flex-1 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors sm:flex-none sm:px-4 sm:text-[13.5px] ${
-        actif ? "bg-ink text-paper" : "text-ink-doux hover:text-ink"
-      }`}
-    >
+    <section id={id} className="border-t border-trait py-12 first:border-t-0 md:py-16">
+      <div className="flex flex-col gap-1.5 md:flex-row md:gap-8">
+        <div className="shrink-0 pt-1 font-titre text-[13px] tabular-nums text-encre-3 md:w-12">
+          {numero}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-titre text-[1.75rem] leading-tight tracking-[-0.015em] md:text-[2.1rem]">
+            {titre}
+          </h2>
+          <p className="mt-2.5 max-w-[68ch] text-[14.5px] leading-relaxed text-encre-2">{chapo}</p>
+          <div className="mt-7">{children}</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** L'année choisie n'a pas encore de détail par fonction : on l'annonce. */
+function Repli({ annee }: { annee: number }) {
+  return (
+    <p className="mb-4 rounded-lg border border-trait bg-fond-2 px-3.5 py-2.5 text-[13px] leading-relaxed text-encre-2">
+      <strong className="font-semibold text-encre">Détail {annee} partiel.</strong> La ventilation
+      par fonction de {annee} n&apos;est pas encore publiée : Eurostat la diffuse environ un an
+      après les agrégats. La dépense est donc montrée par nature économique.
+    </p>
+  );
+}
+
+/** Ce que veut dire chaque famille de couleurs, dit une fois pour toutes. */
+function Legende({ mode }: { mode: Mode }) {
+  return (
+    <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[12.5px] text-encre-2">
+      <Cle couleurs={["#063898", "#204ea7", "#3763b6", "#4e78c5"]}>
+        Prélèvements obligatoires
+      </Cle>
+      <Cle couleurs={["#00656f", "#007981", "#008e95", "#1aa2a9"]}>Autres ressources</Cle>
+      <Cle couleurs={["#b01b2e"]}>Emprunt de l&apos;année</Cle>
+      <Cle couleurs={["#8a3aa0", "#227f53", "#b07a00", "#c34517"]}>
+        {mode === "fonction" ? "Fonctions" : "Natures de dépense"}
+      </Cle>
+    </ul>
+  );
+}
+
+function Cle({ couleurs, children }: { couleurs: string[]; children: React.ReactNode }) {
+  return (
+    <li className="flex items-center gap-2">
+      <span aria-hidden="true" className="flex h-3 gap-[2px]">
+        {couleurs.map((c) => (
+          <span key={c} className="w-[7px] rounded-[2px]" style={{ background: c }} />
+        ))}
+      </span>
       {children}
-    </button>
+    </li>
   );
 }
 
@@ -218,15 +366,18 @@ function Bloc({
 }: {
   titre: string;
   montant: string;
-  part: string;
+  /** Nul quand l'unité affichée est déjà une part : on ne l'écrit pas deux fois. */
+  part: string | null;
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <div className="font-titre text-[1.6rem] tabular-nums">{montant}</div>
-      <div className="text-[13px] text-ink-doux tabular-nums">{part} des dépenses</div>
-      <h3 className="mt-3 text-[14.5px] font-semibold">{titre}</h3>
-      <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-doux">{children}</p>
+    <div className="border-t-2 border-encre pt-4">
+      <div className="font-titre text-[1.7rem] leading-none tabular-nums">{montant}</div>
+      <div className="mt-1 text-[12.5px] tabular-nums text-encre-3">
+        {part ? `${part} des dépenses` : "des dépenses de l'année"}
+      </div>
+      <h3 className="mt-3 text-[15px] font-semibold leading-snug">{titre}</h3>
+      <p className="mt-2 text-[13.5px] leading-relaxed text-encre-2">{children}</p>
     </div>
   );
 }

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Captures de contrôle
 /apercu
+
+# Captures d'écran de vérification visuelle
+.apercu/

@@ -8,7 +8,15 @@ import {
   type SankeyLinkMinimal,
 } from "d3-sankey";
 import type { Graphe, Noeud } from "@/lib/modele";
-import { milliards, parHabitant, pourcent } from "@/lib/format";
+import {
+  euros,
+  formaterCourt,
+  milliards,
+  parHabitant,
+  pourcent,
+  type Bareme,
+  type Unite,
+} from "@/lib/format";
 
 type NoeudCalcule = SankeyNodeMinimal<Noeud, object> & Noeud;
 type LienCalcule = SankeyLinkMinimal<Noeud, object> & {
@@ -18,22 +26,24 @@ type LienCalcule = SankeyLinkMinimal<Noeud, object> & {
 };
 
 /** Place réservée aux libellés, de part et d'autre des rubans. */
-const GOUTTIERE = 276;
+const GOUTTIERE = 268;
 const MARGE_V = 22;
-const LARGEUR_NOEUD = 12;
-const ECART_NOEUDS = 6;
+const LARGEUR_NOEUD = 13;
+const ECART_NOEUDS = 7;
 /** En dessous, le diagramme devient illisible : on laisse défiler. */
 const LARGEUR_MIN = 980;
 /** Hauteur minimale d'un libellé sur deux lignes, plus l'air autour. */
-const PAS_LIBELLE = 33;
+const PAS_LIBELLE = 34;
 
 export default function Sankey({
   graphe,
-  population,
+  bareme,
+  unite,
   onBasculer,
 }: {
   graphe: Graphe;
-  population: number;
+  bareme: Bareme;
+  unite: Unite;
   onBasculer: (code: string) => void;
 }) {
   const conteneur = useRef<HTMLDivElement>(null);
@@ -114,136 +124,148 @@ export default function Sankey({
   // courant au lieu d'afficher des montants périmés.
   const survol = calcule.nodes.find((n) => n.id === survolId) ?? null;
 
-  const opacite = (n: NoeudCalcule) =>
-    survolId === null || survolId === n.id || n.id === "APU" ? 1 : 0.5;
+  const enAvant = (n: NoeudCalcule) => survolId === null || survolId === n.id || n.id === "APU";
+  const opacite = (n: NoeudCalcule) => (enAvant(n) ? 1 : 0.5);
+  /** Le texte s'estompe moins que le ruban : une étiquette doit rester lisible. */
+  const opaciteTexte = (n: NoeudCalcule) => (enAvant(n) ? 1 : 0.62);
   const lienActif = (l: LienCalcule) =>
     survolId === null || l.source.id === survolId || l.target.id === survolId;
 
   return (
     <div className="relative w-full">
       <div ref={conteneur} className="w-full overflow-x-auto overflow-y-hidden">
-      <svg
-        width={largeur}
-        height={hauteur}
-        viewBox={`0 0 ${largeur} ${hauteur}`}
-        className="block select-none"
-        role="img"
-        aria-label="Diagramme de flux des recettes et des dépenses publiques"
-        onMouseLeave={() => setSurvolId(null)}
-      >
-        <g>
-          {calcule.links.map((l, i) => (
-            <path
-              key={i}
-              d={chemin(l) ?? undefined}
-              fill="none"
-              stroke={l.couleur}
-              strokeWidth={Math.max(1, l.width ?? 1)}
-              strokeOpacity={lienActif(l) ? 0.62 : 0.16}
-              className="transition-[stroke-opacity] duration-150"
-            />
-          ))}
-        </g>
+        <svg
+          width={largeur}
+          height={hauteur}
+          viewBox={`0 0 ${largeur} ${hauteur}`}
+          className="block select-none"
+          role="img"
+          aria-label="Diagramme de flux des recettes et des dépenses publiques"
+          onMouseLeave={() => setSurvolId(null)}
+        >
+          <g>
+            {calcule.links.map((l, i) => (
+              <path
+                key={i}
+                d={chemin(l) ?? undefined}
+                fill="none"
+                stroke={l.couleur}
+                strokeWidth={Math.max(1, l.width ?? 1)}
+                strokeOpacity={lienActif(l) ? 0.58 : 0.2}
+                className="transition-[stroke-opacity] duration-150"
+              />
+            ))}
+          </g>
 
-        <g>
-          {calcule.nodes.map((n) => {
-            const x0 = n.x0 ?? 0;
-            const x1 = n.x1 ?? 0;
-            const y0 = n.y0 ?? 0;
-            const y1 = n.y1 ?? 0;
-            const yNoeud = (y0 + y1) / 2;
-            const tronc = n.cote === "tronc";
-            const aGauche = n.cote === "source";
-            const cliquable = n.depliable || n.deplie;
-            const yLibelle = calcule.etiquettes.get(n.id) ?? yNoeud;
-            const decale = Math.abs(yLibelle - yNoeud) > 3;
-            const xAncre = aGauche ? x0 - 12 : x1 + 12;
+          <g>
+            {calcule.nodes.map((n) => {
+              const x0 = n.x0 ?? 0;
+              const x1 = n.x1 ?? 0;
+              const y0 = n.y0 ?? 0;
+              const y1 = n.y1 ?? 0;
+              const yNoeud = (y0 + y1) / 2;
+              const tronc = n.cote === "tronc";
+              const aGauche = n.cote === "source";
+              const cliquable = n.depliable || n.deplie;
+              const yLibelle = calcule.etiquettes.get(n.id) ?? yNoeud;
+              const decale = Math.abs(yLibelle - yNoeud) > 3;
+              const xAncre = aGauche ? x0 - 13 : x1 + 13;
 
-            return (
-              <g
-                key={n.id}
-                className={cliquable ? "cursor-pointer" : "cursor-default"}
-                onMouseMove={(e) => {
-                  setSurvolId(n.id);
-                  const r = conteneur.current?.getBoundingClientRect();
-                  if (r) setCurseur({ x: e.clientX - r.left, y: e.clientY - r.top });
-                }}
-                onClick={() => cliquable && onBasculer(n.parent)}
-                tabIndex={cliquable ? 0 : -1}
-                onFocus={() => setSurvolId(n.id)}
-                onBlur={() => setSurvolId(null)}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === " ") && cliquable) {
-                    e.preventDefault();
-                    onBasculer(n.parent);
-                  }
-                }}
-                role={cliquable ? "button" : undefined}
-                aria-label={`${n.libelle}, ${milliards(n.montant)}`}
-              >
-                <rect
-                  x={x0}
-                  y={y0}
-                  width={Math.max(x1 - x0, 1)}
-                  height={Math.max(y1 - y0, 1.5)}
-                  fill={n.couleur}
-                  rx={2}
-                  opacity={opacite(n)}
-                  className="transition-opacity duration-150"
-                />
+              return (
+                <g
+                  key={n.id}
+                  className={cliquable ? "cursor-pointer" : "cursor-default"}
+                  onMouseMove={(e) => {
+                    setSurvolId(n.id);
+                    const r = conteneur.current?.getBoundingClientRect();
+                    if (r) setCurseur({ x: e.clientX - r.left, y: e.clientY - r.top });
+                  }}
+                  onClick={() => cliquable && onBasculer(n.parent)}
+                  tabIndex={cliquable ? 0 : -1}
+                  onFocus={() => setSurvolId(n.id)}
+                  onBlur={() => setSurvolId(null)}
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === " ") && cliquable) {
+                      e.preventDefault();
+                      onBasculer(n.parent);
+                    }
+                  }}
+                  role={cliquable ? "button" : undefined}
+                  aria-label={`${n.libelle}, ${milliards(n.montant)}${
+                    cliquable ? (n.deplie ? ", replier" : ", ouvrir le détail") : ""
+                  }`}
+                >
+                  <rect
+                    x={x0}
+                    y={y0}
+                    width={Math.max(x1 - x0, 1)}
+                    height={Math.max(y1 - y0, 1.5)}
+                    fill={n.couleur}
+                    rx={2}
+                    opacity={opacite(n)}
+                    className="transition-opacity duration-150"
+                  />
 
-                {tronc ? (
-                  <text
-                    x={(x0 + x1) / 2}
-                    y={yNoeud}
-                    textAnchor="middle"
-                    className="pointer-events-none fill-paper text-[11px] font-medium tracking-wide tabular-nums"
-                    style={{ writingMode: "vertical-rl" }}
-                  >
-                    {milliards(n.montant)}
-                  </text>
-                ) : (
-                  <>
-                    {decale ? (
-                      <path
-                        d={`M${xAncre + (aGauche ? 7 : -7)},${yNoeud} L${xAncre + (aGauche ? 2 : -2)},${yLibelle}`}
-                        stroke={n.couleur}
-                        strokeWidth={1}
-                        fill="none"
-                        opacity={opacite(n) * 0.5}
+                  {tronc ? (
+                    <text
+                      x={(x0 + x1) / 2}
+                      y={yNoeud}
+                      textAnchor="middle"
+                      className="pointer-events-none fill-fond text-[11px] font-medium tracking-wide tabular-nums"
+                      style={{ writingMode: "vertical-rl" }}
+                    >
+                      {milliards(n.montant)}
+                    </text>
+                  ) : (
+                    <>
+                      {decale ? (
+                        <path
+                          d={`M${xAncre + (aGauche ? 8 : -8)},${yNoeud} L${xAncre + (aGauche ? 2 : -2)},${yLibelle}`}
+                          stroke={n.couleur}
+                          strokeWidth={1.25}
+                          fill="none"
+                          opacity={opacite(n) * 0.85}
+                        />
+                      ) : null}
+                      <Etiquette
+                        noeud={n}
+                        x={xAncre}
+                        y={yLibelle}
+                        ancrage={aGauche ? "end" : "start"}
+                        opacite={opaciteTexte(n)}
+                        bareme={bareme}
+                        unite={unite}
+                        actif={survolId === n.id}
                       />
-                    ) : null}
-                    <Etiquette
-                      noeud={n}
-                      x={xAncre}
-                      y={yLibelle}
-                      ancrage={aGauche ? "end" : "start"}
-                      opacite={opacite(n)}
-                      population={population}
-                    />
-                  </>
-                )}
+                    </>
+                  )}
 
-                {/* Zone de survol confortable, même pour un ruban d'un pixel. */}
-                <rect
-                  x={aGauche ? xAncre - 248 : x0}
-                  y={Math.min(y0, yLibelle - 15)}
-                  width={248 + (x1 - x0)}
-                  height={Math.max(y1, yLibelle + 15) - Math.min(y0, yLibelle - 15)}
-                  fill="transparent"
-                />
-              </g>
-            );
-          })}
-        </g>
-      </svg>
+                  {/* Zone de survol confortable, même pour un ruban d'un pixel. */}
+                  <rect
+                    x={aGauche ? xAncre - 244 : x0}
+                    y={Math.min(y0, yLibelle - 15)}
+                    width={244 + (x1 - x0)}
+                    height={Math.max(y1, yLibelle + 15) - Math.min(y0, yLibelle - 15)}
+                    fill="transparent"
+                  />
+                </g>
+              );
+            })}
+          </g>
+        </svg>
       </div>
 
       {/* Sur petit écran le diagramme déborde : on signale qu'il continue. */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-paper to-transparent sm:hidden" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-fond to-transparent lg:hidden" />
 
       {survol && survol.cote !== "tronc" ? (
-        <Infobulle noeud={survol} position={curseur} population={population} largeur={largeur} />
+        <Infobulle
+          noeud={survol}
+          position={curseur}
+          bareme={bareme}
+          largeur={largeur}
+          hauteur={hauteur}
+        />
       ) : null}
     </div>
   );
@@ -255,14 +277,18 @@ function Etiquette({
   y,
   ancrage,
   opacite,
-  population,
+  bareme,
+  unite,
+  actif,
 }: {
   noeud: NoeudCalcule;
   x: number;
   y: number;
   ancrage: "start" | "end";
   opacite: number;
-  population: number;
+  bareme: Bareme;
+  unite: Unite;
+  actif: boolean;
 }) {
   const libelle =
     noeud.libelle.length > 40 ? `${noeud.libelle.slice(0, 39).trimEnd()}…` : noeud.libelle;
@@ -274,13 +300,15 @@ function Etiquette({
       opacity={opacite}
       className="pointer-events-none transition-opacity duration-150"
     >
-      <tspan className="fill-ink text-[12.5px] font-medium" dy="-0.22em">
+      <tspan
+        className={`text-[12.5px] ${actif ? "fill-encre font-semibold" : "fill-encre font-medium"}`}
+        dy="-0.22em"
+      >
         {libelle}
         {noeud.depliable ? " ▸" : ""}
       </tspan>
-      <tspan x={x} dy="1.3em" className="fill-ink-doux text-[11px] tabular-nums">
-        {milliards(noeud.montant)} · {pourcent(noeud.part)} ·{" "}
-        {parHabitant(noeud.montant, population)}/hab.
+      <tspan x={x} dy="1.32em" className="fill-encre-2 text-[11px] tabular-nums">
+        {formaterCourt(noeud.montant, unite, bareme)}
       </tspan>
     </text>
   );
@@ -289,43 +317,58 @@ function Etiquette({
 function Infobulle({
   noeud,
   position,
-  population,
+  bareme,
   largeur,
+  hauteur,
 }: {
   noeud: NoeudCalcule;
   position: { x: number; y: number };
-  population: number;
+  bareme: Bareme;
   largeur: number;
+  hauteur: number;
 }) {
   const aDroite = position.x > largeur / 2;
   return (
     <div
-      className="pointer-events-none absolute z-10 w-[280px] rounded-lg border border-trait bg-paper p-3 shadow-[0_8px_28px_rgba(26,22,19,0.13)]"
+      className="pointer-events-none absolute z-20 w-[292px] rounded-xl border border-trait bg-carte p-3.5 shadow-[0_10px_34px_rgba(28,32,39,0.16)]"
       style={{
         left: aDroite ? undefined : position.x + 18,
         right: aDroite ? largeur - position.x + 18 : undefined,
-        top: Math.max(4, position.y - 40),
+        top: Math.min(Math.max(4, position.y - 40), hauteur - 190),
       }}
     >
       <div className="text-[13.5px] font-semibold leading-snug">{noeud.libelle}</div>
       {noeud.libelleOfficiel && noeud.libelleOfficiel !== noeud.libelle ? (
-        <div className="mt-0.5 text-[11.5px] italic leading-snug text-ink-doux">
+        <div className="mt-0.5 text-[11.5px] italic leading-snug text-encre-3">
           {noeud.libelleOfficiel}
         </div>
       ) : null}
-      <div className="mt-1.5 text-[13px] tabular-nums">
-        {milliards(noeud.montant)}{" "}
-        <span className="text-ink-doux">
-          · {pourcent(noeud.part)} du total · {parHabitant(noeud.montant, population)} par habitant
-        </span>
+
+      <div className="mt-2 font-titre text-[1.35rem] leading-none tabular-nums">
+        {milliards(noeud.montant)}
       </div>
+
+      {/* Les quatre lectures d'un même montant, d'un coup. */}
+      <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[12px] tabular-nums">
+        <dt className="text-encre-3">Part du total</dt>
+        <dd className="text-right font-medium">{pourcent(noeud.part)}</dd>
+        <dt className="text-encre-3">Par habitant</dt>
+        <dd className="text-right font-medium">{parHabitant(noeud.montant, bareme.population)}</dd>
+        <dt className="text-encre-3">Pour 1 000 € dépensés</dt>
+        <dd className="text-right font-medium">
+          {euros((noeud.montant / bareme.total) * 1000)}
+        </dd>
+      </dl>
+
       {noeud.note ? (
-        <p className="mt-2 text-[12.5px] leading-relaxed text-ink-doux">{noeud.note}</p>
+        <p className="mt-2.5 border-t border-trait pt-2 text-[12.5px] leading-relaxed text-encre-2">
+          {noeud.note}
+        </p>
       ) : null}
       {noeud.depliable ? (
-        <p className="mt-2 text-[12px] font-medium text-ink">Cliquer pour voir le détail</p>
+        <p className="mt-2 text-[12px] font-semibold text-bleu">Cliquer pour voir le détail</p>
       ) : noeud.deplie ? (
-        <p className="mt-2 text-[12px] font-medium text-ink">Cliquer pour replier</p>
+        <p className="mt-2 text-[12px] font-semibold text-bleu">Cliquer pour replier</p>
       ) : null}
     </div>
   );

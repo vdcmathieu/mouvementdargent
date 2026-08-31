@@ -1,39 +1,100 @@
 @import "tailwindcss";
 
+/*
+ * Thème « tricolore éditorial ».
+ * Le bleu porte tout ce qui entre, le rouge tout ce qui manque, l'encre le
+ * total. Les teintes de données sont dans src/lib/palette.ts : elles ont été
+ * validées (bandes de luminosité, plancher de chroma, séparation daltonienne,
+ * contraste sur le fond) et ne se choisissent pas à l'œil.
+ */
 @theme {
-  --color-paper: #fbf8f3;
-  --color-paper-2: #f4efe6;
-  --color-paper-3: #ece5d8;
-  --color-ink: #1a1613;
-  --color-ink-doux: #6b6259;
-  --color-trait: #e2dacd;
-  --color-rouge: #b03a2e;
-  --color-vert: #3f7d4f;
+  /* Surfaces — papier crème */
+  --color-fond: #fbfaf7;
+  --color-fond-2: #f4f1ea;
+  --color-fond-3: #eae6db;
+  --color-carte: #ffffff;
+
+  /* Encres */
+  --color-encre: #1c2027;
+  --color-encre-2: #565a66;
+  --color-encre-3: #8a8e99;
+  --color-trait: #e1ddd2;
+  --color-trait-2: #cfc9ba;
+
+  /* Tricolore */
+  --color-bleu: #063898;
+  --color-bleu-2: #204ea7;
+  --color-bleu-pale: #e9eefa;
+  --color-rouge: #b01b2e;
+  --color-rouge-pale: #fbecee;
+  --color-vert: #227f53;
 
   --font-titre: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino,
     Georgia, ui-serif, serif;
   --font-texte: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+
+  --radius-carte: 14px;
 }
 
 html {
   color-scheme: light;
   scroll-behavior: smooth;
+  /* Le sommaire collant ne doit pas recouvrir le titre de la section visée. */
+  scroll-padding-top: 112px;
 }
 
 body {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
+  background-color: var(--color-fond);
+  color: var(--color-encre);
   font-family: var(--font-texte);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: #1a161320;
+  background: #06389822;
 }
 
 /* Chiffres alignés partout où l'on compare des montants. */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Le liseré bleu-blanc-rouge du haut de page. */
+.tricolore {
+  background: linear-gradient(
+    to right,
+    var(--color-bleu) 0 33.333%,
+    #ffffff 33.333% 66.666%,
+    var(--color-rouge) 66.666% 100%
+  );
+}
+
+.lien {
+  text-decoration: underline;
+  text-decoration-color: var(--color-trait-2);
+  text-underline-offset: 4px;
+}
+.lien:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Un seul style de focus visible sur tout le site. */
+:where(a, button, select, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-bleu);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
