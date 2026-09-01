@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LIBELLES_UNITES, UNITES, type Unite } from "@/lib/format";
 import type { Mode } from "@/lib/types";
 
@@ -41,6 +41,8 @@ export default function Controles({
     const actif = bande.current?.querySelector('[aria-pressed="true"]');
     actif?.scrollIntoView({ block: "nearest", inline: "center" });
   }, [annee]);
+
+  const avancement = useAvancement();
 
   return (
     <div className="sticky top-0 z-30 border-b border-trait bg-fond/85 backdrop-blur-md">
@@ -119,8 +121,42 @@ export default function Controles({
           </Groupe>
         </div>
       </div>
+
+      {/* Où l'on en est dans la page. Le tricolore se découvre au fil de la lecture. */}
+      <div
+        className="filet-tricolore absolute inset-x-0 bottom-0 h-[2px]"
+        style={{ clipPath: `inset(0 ${(1 - avancement) * 100}% 0 0)` }}
+        aria-hidden="true"
+      />
     </div>
   );
+}
+
+/** Part de la page déjà parcourue, entre 0 et 1. */
+function useAvancement() {
+  const [avancement, setAvancement] = useState(0);
+
+  useEffect(() => {
+    let attente = 0;
+    const mesurer = () => {
+      attente = 0;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setAvancement(total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0);
+    };
+    const auDefilement = () => {
+      if (!attente) attente = window.requestAnimationFrame(mesurer);
+    };
+    mesurer();
+    window.addEventListener("scroll", auDefilement, { passive: true });
+    window.addEventListener("resize", auDefilement);
+    return () => {
+      window.removeEventListener("scroll", auDefilement);
+      window.removeEventListener("resize", auDefilement);
+      if (attente) window.cancelAnimationFrame(attente);
+    };
+  }, []);
+
+  return avancement;
 }
 
 function Groupe({ legende, children }: { legende: string; children: React.ReactNode }) {

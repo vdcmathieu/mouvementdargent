@@ -1,5 +1,6 @@
 "use client";
 
+import TeteDeBloc from "./TeteDeBloc";
 import { Miniature } from "./graphiques";
 import { libelleCourt } from "@/lib/libelles";
 import { TEINTES_SECTEURS, eclaircir, teinte, voile } from "@/lib/palette";
@@ -116,7 +117,7 @@ export default function Administration({
           </>
         }
       >
-        <ul className="mt-1 max-w-[860px]">
+        <ul className="mt-1 max-w-[1060px]">
           {interne.postes.map((p) => (
             <Ligne
               key={p.code}
@@ -168,7 +169,7 @@ export default function Administration({
         }
       >
         <Barre
-          className="max-w-[860px]"
+          className="max-w-[1060px]"
           segments={[
             ...fonctionnement.map((n, i) => ({
               cle: n.code,
@@ -185,7 +186,7 @@ export default function Administration({
           ]}
           total={interne.montant}
         />
-        <dl className="mt-5 grid max-w-[860px] gap-x-10 gap-y-1.5 sm:grid-cols-2">
+        <dl className="mt-5 grid max-w-[1060px] gap-x-10 gap-y-1.5 sm:grid-cols-2">
           {fonctionnement.map((n, i) => (
             <Definition
               key={n.code}
@@ -209,7 +210,7 @@ export default function Administration({
             />
           ))}
         </dl>
-        <dl className="mt-3 grid max-w-[860px] gap-x-10 gap-y-1.5 border-t-2 border-encre pt-2 sm:grid-cols-2">
+        <dl className="mt-3 grid max-w-[1060px] gap-x-10 gap-y-1.5 border-t-2 border-encre pt-2 sm:grid-cols-2">
           <Definition
             libelle="Coût de fonctionnement"
             montant={interne.fonctionnement}
@@ -243,7 +244,7 @@ export default function Administration({
           </>
         }
       >
-        <ul className="mt-1 max-w-[860px]">
+        <ul className="mt-1 max-w-[1060px]">
           {remunerations.parFonction.map((f) => (
             <Ligne
               key={f.code}
@@ -279,7 +280,7 @@ export default function Administration({
         }
       >
         <Barre
-          className="max-w-[860px]"
+          className="max-w-[1060px]"
           segments={Object.entries(interne.parSecteur)
             .sort((a, b) => b[1] - a[1])
             .map(([code, montant]) => ({
@@ -290,7 +291,7 @@ export default function Administration({
             }))}
           total={Object.values(interne.parSecteur).reduce((a, b) => a + b, 0)}
         />
-        <dl className="mt-5 grid max-w-[860px] gap-x-6 gap-y-1.5 sm:grid-cols-3">
+        <dl className="mt-5 grid max-w-[1060px] gap-x-6 gap-y-1.5 sm:grid-cols-3">
           {Object.entries(interne.parSecteur)
             .sort((a, b) => b[1] - a[1])
             .map(([code, montant]) => (
@@ -349,11 +350,8 @@ function Bloc({
 }) {
   return (
     <section className="min-w-0">
-      <h3 className="border-b border-encre pb-2 text-[13px] font-semibold uppercase tracking-[0.09em]">
-        {titre}
-      </h3>
-      <p className="mt-2.5 max-w-[68ch] text-[13.5px] leading-relaxed text-encre-2">{chapo}</p>
-      <div className="mt-4">{children}</div>
+      <TeteDeBloc titre={titre}>{chapo}</TeteDeBloc>
+      <div className="mt-5">{children}</div>
     </section>
   );
 }
@@ -434,7 +432,7 @@ function Barre({
       {segments.map((s) => (
         <div
           key={s.cle}
-          className="h-full"
+          className="h-full transition-[width] duration-500 ease-out"
           style={{ width: `${(s.montant / total) * 100}%`, background: s.couleur }}
           title={`${s.libelle} — ${milliards(s.montant)}`}
         >

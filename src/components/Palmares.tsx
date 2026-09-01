@@ -140,7 +140,7 @@ function Ligne({
     >
       <span
         aria-hidden="true"
-        className="absolute inset-y-0.5 left-0 -z-0 rounded-sm"
+        className="absolute inset-y-0.5 left-0 -z-0 rounded-sm transition-[width] duration-500 ease-out"
         style={{
           width: `${Math.max(largeur * 100, 0.4)}%`,
           background: voile(couleur, petit ? 0.9 : 0.84),

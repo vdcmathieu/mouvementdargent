@@ -1,5 +1,6 @@
 "use client";
 
+import TeteDeBloc from "./TeteDeBloc";
 import { euros, eurosPrecis, milliards, pourcent } from "@/lib/format";
 import { voile } from "@/lib/palette";
 import {
@@ -86,14 +87,11 @@ export default function PouvoirsPublics({
 
       {/* ---- les six dotations ---- */}
       <section className="min-w-0">
-        <h3 className="border-b border-encre pb-2 text-[13px] font-semibold uppercase tracking-[0.09em]">
-          Dotation par institution
-        </h3>
-        <p className="mt-2.5 max-w-[68ch] text-[13.5px] leading-relaxed text-encre-2">
+        <TeteDeBloc titre="Dotation par institution">
           Ce sont des crédits votés, pas exécutés : les deux assemblées fixent elles-mêmes leur
           demande, que le Parlement approuve.{exercice.note ? ` ${exercice.note}` : ""}
-        </p>
-        <ul className="mt-4 max-w-[860px]">
+        </TeteDeBloc>
+        <ul className="mt-4 max-w-[1060px]">
           {exercice.dotations.map((d) => (
             <li key={d.code} className="border-b border-trait last:border-0">
               <div className="relative flex items-baseline gap-3 py-[7px]">
@@ -125,17 +123,14 @@ export default function PouvoirsPublics({
 
       {/* ---- l'indemnité, personne par personne ---- */}
       <section className="min-w-0">
-        <h3 className="border-b border-encre pb-2 text-[13px] font-semibold uppercase tracking-[0.09em]">
-          Ce que touche un parlementaire
-        </h3>
-        <p className="mt-2.5 max-w-[68ch] text-[13.5px] leading-relaxed text-encre-2">
+        <TeteDeBloc titre="Ce que touche un parlementaire">
           L&apos;indemnité brute est la même pour un député et pour un sénateur : le même texte la
           fixe pour les deux chambres. Le net diffère parce que la cotisation de retraite
           n&apos;est pas la même de part et d&apos;autre. Montants au{" "}
           {INDEMNITE_PARLEMENTAIRE.dateEffet}.
-        </p>
+        </TeteDeBloc>
 
-        <div className="mt-4 grid max-w-[980px] gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:gap-10">
+        <div className="mt-4 grid max-w-[1060px] gap-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:gap-10">
           <div className="rounded-carte border border-trait bg-carte p-4">
             <div className="flex items-baseline justify-between gap-4 border-b border-trait pb-2.5">
               <span className="text-[13px] font-semibold">Indemnité brute mensuelle</span>
@@ -216,7 +211,7 @@ export default function PouvoirsPublics({
         <h3 className="text-[15px] font-semibold">
           Remettre les montants côte à côte
         </h3>
-        <div className="mt-3.5 max-w-[860px] space-y-2.5">
+        <div className="mt-3.5 max-w-[1060px] space-y-2.5">
           <Echelle
             libelle={`Dépense publique totale ${exercice.annee}`}
             montant={depensesEuros}

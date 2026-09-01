@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import FluxMiniature from "./FluxMiniature";
 import { euros, milliards, pourcent } from "@/lib/format";
 import type { Annee } from "@/lib/types";
 
@@ -21,10 +22,14 @@ const SOMMAIRE = [
  */
 export default function Entete({ donnees, maj }: { donnees: Annee; maj: string }) {
   const { agregats, meta } = donnees;
+  const couverture = agregats.recettes / agregats.depenses;
+  const emprunte = Math.max(0, 1 - couverture);
 
   return (
-    <header className="border-b border-trait">
-      <div className="mx-auto max-w-[1240px] px-5 pb-10 pt-7 sm:pt-9">
+    <header className="relative overflow-hidden border-b border-trait">
+      <div className="halo-tricolore pointer-events-none absolute inset-0" aria-hidden="true" />
+
+      <div className="relative mx-auto max-w-[1240px] px-5 pb-11 pt-7 sm:pt-9">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <span className="text-[12.5px] font-semibold uppercase tracking-[0.16em] text-encre-2">
             Mouvement d&apos;argent
@@ -42,27 +47,64 @@ export default function Entete({ donnees, maj }: { donnees: Annee; maj: string }
           </nav>
         </div>
 
-        <h1 className="mt-7 max-w-[19ch] font-titre text-[2.05rem] leading-[1.08] tracking-[-0.02em] sm:text-[3.2rem] lg:text-[4rem]">
-          En {meta.annee}, la France a dépensé{" "}
-          <span className="text-bleu tabular-nums">{milliards(agregats.depenses)}</span>{" "}
-          d&apos;argent public.
-        </h1>
+        <div className="mt-8 grid items-center gap-10 lg:mt-10 lg:grid-cols-12 lg:gap-14">
+          <div className="lg:col-span-7">
+            <h1 className="animation-monter max-w-[17ch] font-titre text-[2.05rem] leading-[1.08] tracking-[-0.02em] sm:text-[3.2rem] lg:text-[3.6rem]">
+              En {meta.annee}, la France a dépensé{" "}
+              <span className="text-bleu tabular-nums">{milliards(agregats.depenses)}</span>{" "}
+              d&apos;argent public.
+            </h1>
 
-        <p className="mt-5 max-w-[62ch] text-[16px] leading-relaxed text-encre-2 sm:text-[17px]">
-          Soit {milliards(agregats.depenses / 365)} par jour, ou{" "}
-          <span className="font-medium text-encre">
-            {euros((agregats.depenses * 1e6) / agregats.population)}
-          </span>{" "}
-          par habitant. Voici d&apos;où vient cet argent et où il va, à l&apos;échelle, sans rien
-          arrondir en chemin.
-        </p>
+            <p
+              className="animation-monter mt-5 max-w-[56ch] text-[16px] leading-relaxed text-encre-2 sm:text-[17px]"
+              style={{ animationDelay: "0.12s" }}
+            >
+              Soit {milliards(agregats.depenses / 365)} par jour, ou{" "}
+              <span className="font-medium text-encre">
+                {euros((agregats.depenses * 1e6) / agregats.population)}
+              </span>{" "}
+              par habitant. Voici d&apos;où vient cet argent et où il va, à l&apos;échelle, sans
+              rien arrondir en chemin.
+            </p>
 
-        <nav aria-label="Sommaire" className="mt-7 flex flex-wrap gap-x-1 gap-y-1.5 text-[13px]">
+            {/* Le partage du financement, dit en une barre avant tout le reste. */}
+            <div className="animation-monter mt-7 max-w-[30rem]" style={{ animationDelay: "0.2s" }}>
+              <div className="flex h-2 overflow-hidden rounded-full bg-fond-3" aria-hidden="true">
+                <div
+                  className="barre-animee bg-bleu"
+                  style={{ width: `${couverture * 100}%`, animationDelay: "0.35s" }}
+                />
+                <div
+                  className="barre-animee bg-rouge"
+                  style={{ width: `${emprunte * 100}%`, animationDelay: "0.8s" }}
+                />
+              </div>
+              <p className="mt-2 text-[12.5px] tabular-nums text-encre-2">
+                <span className="font-medium text-bleu">{pourcent(couverture)}</span> couverts par
+                les recettes · <span className="font-medium text-rouge">{pourcent(emprunte)}</span>{" "}
+                empruntés
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="animation-fondu lg:col-span-5"
+            style={{ animationDelay: "0.25s", animationDuration: "0.7s" }}
+          >
+            <FluxMiniature donnees={donnees} />
+            <p className="mt-3 text-[12px] leading-relaxed text-encre-3">
+              La silhouette du mouvement : à gauche ce qui finance l&apos;année, au centre le total,
+              à droite ce qu&apos;il paie. En grand plus bas, avec les étiquettes.
+            </p>
+          </div>
+        </div>
+
+        <nav aria-label="Sommaire" className="mt-10 flex flex-wrap gap-x-1.5 gap-y-1.5 text-[13px]">
           {SOMMAIRE.map((s) => (
             <a
               key={s.href}
               href={s.href}
-              className="rounded-full border border-trait px-3 py-1 text-encre-2 transition-colors hover:border-encre hover:text-encre"
+              className="rounded-full border border-trait px-3 py-1 text-encre-2 transition-colors duration-200 hover:border-bleu hover:bg-bleu-pale hover:text-bleu"
             >
               {s.texte}
             </a>

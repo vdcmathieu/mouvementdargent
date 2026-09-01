@@ -61,7 +61,7 @@ export default function QuiDepense({
 
                 <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-fond-3">
                   <div
-                    className="h-full rounded-full"
+                    className="h-full rounded-full transition-[width] duration-500 ease-out"
                     style={{ width: `${(a.depenses / maxi) * 100}%`, background: couleur }}
                     aria-hidden="true"
                   />

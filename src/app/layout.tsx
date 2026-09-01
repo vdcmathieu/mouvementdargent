@@ -36,8 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <body>
-        {/* Le liseré du haut : la seule décoration de la page, et elle dit de quel pays on parle. */}
-        <div className="tricolore h-[3px] w-full" aria-hidden="true" />
+        {/* Le liseré du haut : il dit de quel pays on parle, et se déploie une fois au chargement. */}
+        <div className="animation-liseret flex h-[3px] w-full" aria-hidden="true">
+          <span className="w-1/3 bg-bleu" />
+          <span className="w-1/3 bg-white" />
+          <span className="w-1/3 bg-rouge" />
+        </div>
         <a
           href="#flux"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-encre focus:px-3 focus:py-2 focus:text-fond"

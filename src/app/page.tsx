@@ -18,7 +18,8 @@ export default async function Page() {
     <main>
       <Explorateur initiale={donnees} index={index} maj={maj} />
 
-      <footer className="mt-16 border-t border-trait bg-fond-2">
+      <footer className="mt-16 bg-fond-2">
+        <div className="filet-tricolore h-[3px] w-full" aria-hidden="true" />
         <div className="mx-auto grid max-w-[1240px] gap-9 px-5 py-14 md:grid-cols-3">
           <div>
             <h2 className="text-[12px] font-semibold uppercase tracking-[0.1em]">Les données</h2>

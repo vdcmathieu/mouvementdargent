@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState, useTransition } from "react";
 import Entete from "./Entete";
+import Revelation from "./Revelation";
 import Controles from "./Controles";
 import Reperes from "./Reperes";
 import Sankey from "./Sankey";
@@ -296,6 +297,7 @@ export default function Explorateur({
                 titre="L'essentiel est reversé, pas consommé"
                 montant={formater(redistribution, unite, bareme)}
                 part={unite === "part" ? null : pourcent(redistribution / agregats.depenses)}
+                ton="bleu"
               >
                 Retraites, allocations chômage et familiales, remboursements de soins. Cet argent
                 traverse la sphère publique sans y rester : il est collecté puis reversé aux
@@ -305,6 +307,8 @@ export default function Explorateur({
                 titre="Faire tourner l'appareil public"
                 montant={formater(fonctionnement, unite, bareme)}
                 part={unite === "part" ? null : pourcent(fonctionnement / agregats.depenses)}
+                ton="encre"
+                delai={0.08}
               >
                 Les rémunérations des agents publics et tout ce que les administrations achètent
                 pour fonctionner. L&apos;essentiel n&apos;est pas de l&apos;administration au sens
@@ -315,6 +319,8 @@ export default function Explorateur({
                 titre="Les intérêts ne financent aucun service"
                 montant={formater(interets, unite, bareme)}
                 part={unite === "part" ? null : pourcent(interets / agregats.depenses)}
+                ton="rouge"
+                delai={0.16}
               >
                 Le prix des emprunts passés, soit{" "}
                 {euros((interets * 1e6) / agregats.population)} par habitant et par an. Cette
@@ -329,6 +335,11 @@ export default function Explorateur({
   );
 }
 
+/**
+ * Le titre tient la colonne de gauche, le chapô celle de droite : la page
+ * occupe alors toute sa largeur au lieu de s'entasser d'un seul côté, et l'œil
+ * sait où commencer.
+ */
 function Section({
   numero,
   id,
@@ -344,18 +355,25 @@ function Section({
 }) {
   return (
     <section id={id} className="border-t border-trait py-12 first:border-t-0 md:py-16">
-      <div className="flex flex-col gap-1.5 md:flex-row md:gap-8">
-        <div className="shrink-0 pt-1 font-titre text-[13px] tabular-nums text-encre-3 md:w-12">
-          {numero}
+      <Revelation>
+        <div className="grid gap-x-12 gap-y-4 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-3">
+              <span className="filet-tricolore h-[3px] w-9 rounded-full" aria-hidden="true" />
+              <span className="text-[12px] font-semibold tabular-nums tracking-[0.08em] text-encre-3">
+                {numero}
+              </span>
+            </div>
+            <h2 className="mt-3.5 font-titre text-[1.75rem] leading-tight tracking-[-0.015em] md:text-[2.15rem]">
+              {titre}
+            </h2>
+          </div>
+          <p className="max-w-[68ch] text-[14.5px] leading-relaxed text-encre-2 lg:col-span-7 lg:pt-11">
+            {chapo}
+          </p>
         </div>
-        <div className="min-w-0 flex-1">
-          <h2 className="font-titre text-[1.75rem] leading-tight tracking-[-0.015em] md:text-[2.1rem]">
-            {titre}
-          </h2>
-          <p className="mt-2.5 max-w-[68ch] text-[14.5px] leading-relaxed text-encre-2">{chapo}</p>
-          <div className="mt-7">{children}</div>
-        </div>
-      </div>
+        <div className="mt-9">{children}</div>
+      </Revelation>
     </section>
   );
 }
@@ -400,26 +418,39 @@ function Cle({ couleurs, children }: { couleurs: string[]; children: React.React
   );
 }
 
+/** Bleu ce qui entre, rouge ce qui manque, encre le reste : la règle du site. */
+const TONS = {
+  bleu: { trait: "border-bleu", texte: "text-bleu" },
+  encre: { trait: "border-encre", texte: "text-encre" },
+  rouge: { trait: "border-rouge", texte: "text-rouge" },
+} as const;
+
 function Bloc({
   titre,
   montant,
   part,
+  ton,
+  delai = 0,
   children,
 }: {
   titre: string;
   montant: string;
   /** Nul quand l'unité affichée est déjà une part : on ne l'écrit pas deux fois. */
   part: string | null;
+  ton: keyof typeof TONS;
+  delai?: number;
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-t-2 border-encre pt-4">
-      <div className="font-titre text-[1.7rem] leading-none tabular-nums">{montant}</div>
+    <Revelation delai={delai} className={`border-t-2 pt-4 ${TONS[ton].trait}`}>
+      <div className={`font-titre text-[1.7rem] leading-none tabular-nums ${TONS[ton].texte}`}>
+        {montant}
+      </div>
       <div className="mt-1 text-[12.5px] tabular-nums text-encre-3">
         {part ? `${part} des dépenses` : "des dépenses de l'année"}
       </div>
       <h3 className="mt-3 text-[15px] font-semibold leading-snug">{titre}</h3>
       <p className="mt-2 text-[13.5px] leading-relaxed text-encre-2">{children}</p>
-    </div>
+    </Revelation>
   );
 }

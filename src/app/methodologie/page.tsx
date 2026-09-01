@@ -91,6 +91,13 @@ export default async function Page() {
           les autres postes.
         </p>
         <p>
+          La vignette du haut de page est le même diagramme réduit à sa silhouette, sans étiquette
+          ni chiffre. Elle porte les proportions réelles de l&apos;année affichée ; les postes trop
+          fins pour rester visibles à cette taille y sont additionnés dans une dernière bande,
+          jamais retirés. Aucune valeur ne s&apos;y lit : tout se lit sur le diagramme en grand et
+          dans les listes.
+        </p>
+        <p>
           Deux tables d&apos;Eurostat peuvent diverger très légèrement parce qu&apos;elles ne sont
           pas rafraîchies le même jour. Pour {d.meta.annee}, le total des dépenses ventilées par
           fonction est inférieur d&apos;environ{" "}

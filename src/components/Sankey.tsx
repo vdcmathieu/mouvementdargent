@@ -7,6 +7,7 @@ import {
   type SankeyNodeMinimal,
   type SankeyLinkMinimal,
 } from "d3-sankey";
+import { useApparu } from "./Revelation";
 import type { Graphe, Noeud } from "@/lib/modele";
 import {
   euros,
@@ -50,6 +51,21 @@ export default function Sankey({
   const [largeur, setLargeur] = useState(LARGEUR_MIN);
   const [survolId, setSurvolId] = useState<string | null>(null);
   const [curseur, setCurseur] = useState({ x: 0, y: 0 });
+
+  // Le tracé n'a de sens que si on le regarde : on attend que le diagramme
+  // entre dans l'écran plutôt que de le dessiner dans le vide.
+  const aLEcran = useApparu(conteneur);
+
+  // Il se dessine une fois, de la gauche vers la droite, dans le sens du flux.
+  // Ensuite, un changement d'année ou de lecture ne rejoue pas ce balayage —
+  // trop long quand on compare deux années de suite : le nouveau tracé se
+  // substitue à l'ancien en un fondu court.
+  const [grapheRendu, setGrapheRendu] = useState(graphe);
+  const [generation, setGeneration] = useState(0);
+  if (grapheRendu !== graphe) {
+    setGrapheRendu(graphe);
+    setGeneration((g) => g + 1);
+  }
 
   useEffect(() => {
     const el = conteneur.current;
@@ -119,6 +135,13 @@ export default function Sankey({
 
   const chemin = sankeyLinkHorizontal<Noeud, object>();
 
+  // Au premier tracé, le balayage ; ensuite, un simple fondu sur le nouveau
+  // graphe. Les deux groupes portent les mêmes attributs.
+  const trace = {
+    clipPath: "url(#balayage-flux)",
+    className: generation === 0 ? undefined : "animation-fondu",
+  };
+
   // On ne retient que l'identifiant du nœud survolé, jamais l'objet : après un
   // changement d'année ou de mode, l'infobulle se recalcule sur le graphe
   // courant au lieu d'afficher des montants périmés.
@@ -143,7 +166,25 @@ export default function Sankey({
           aria-label="Diagramme de flux des recettes et des dépenses publiques"
           onMouseLeave={() => setSurvolId(null)}
         >
-          <g>
+          <defs>
+            <clipPath id="balayage-flux">
+              <rect
+                x="0"
+                y="0"
+                width={largeur}
+                height={hauteur}
+                className={
+                  generation !== 0
+                    ? undefined
+                    : aLEcran
+                      ? "animation-balayage"
+                      : "attente-balayage"
+                }
+              />
+            </clipPath>
+          </defs>
+
+          <g key={`liens-${generation}`} {...trace}>
             {calcule.links.map((l, i) => (
               <path
                 key={i}
@@ -151,13 +192,13 @@ export default function Sankey({
                 fill="none"
                 stroke={l.couleur}
                 strokeWidth={Math.max(1, l.width ?? 1)}
-                strokeOpacity={lienActif(l) ? 0.58 : 0.2}
-                className="transition-[stroke-opacity] duration-150"
+                strokeOpacity={survolId === null ? 0.58 : lienActif(l) ? 0.78 : 0.16}
+                className="transition-[stroke-opacity] duration-200"
               />
             ))}
           </g>
 
-          <g>
+          <g key={`noeuds-${generation}`} {...trace}>
             {calcule.nodes.map((n) => {
               const x0 = n.x0 ?? 0;
               const x1 = n.x1 ?? 0;
